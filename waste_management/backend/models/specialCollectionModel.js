@@ -26,6 +26,16 @@ const specialCollectionSchema = mongoose.Schema(
         remarks: {
             type: String,
         },
+        // --- අලුතින් එකතු කළ fields ---
+        weight: {
+            type: Number,
+            required: true,
+        },
+        totalAmount: {
+            type: Number,
+            required: true,
+        },
+        // ------------------------------
         paymentStatus: {
             type: String,
             required: true,

@@ -1,12 +1,40 @@
-import React from 'react';
-import { View, Text, StyleSheet, Button, SafeAreaView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, Button, SafeAreaView, ScrollView, ActivityIndicator, Image, TouchableOpacity } from 'react-native';
+import axios from 'axios';
+import config from '../config';
+import { Ionicons } from '@expo/vector-icons'; // Icons සඳහා
+
+const API_URL = `http://${config.IP}:${config.PORT}/api/collections`;
+
+// Ongoing Regular Schedules සඳහා Mock Data
+const ongoingMockData = [
+    { id: '1', date: '30 August 2025', time: '11:00 AM', status: 'In progress' },
+    { id: '2', date: '30 August 2025', time: '11:00 AM', status: 'Pending' },
+];
 
 const HomeScreen = ({ route, navigation }) => {
-    // LoginScreen එකෙන් pass කළ userDetails මෙතනින් ලබාගැනීම
     const { userDetails } = route.params;
 
+    const [specialSchedules, setSpecialSchedules] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        // User ගේ special schedules පමණක් backend එකෙන් ලබාගැනීම
+        const fetchMySchedules = async () => {
+            try {
+                const { data } = await axios.get(`${API_URL}/my-schedules/${userDetails._id}`);
+                setSpecialSchedules(data);
+            } catch (error) {
+                alert('Failed to load your special schedules.');
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchMySchedules();
+    }, []);
+
     const handleLogout = () => {
-        // Navigation stack එක reset කර Login තිරයට නැවත යොමු කිරීම
         navigation.reset({
             index: 0,
             routes: [{ name: 'Login' }],
@@ -15,28 +43,69 @@ const HomeScreen = ({ route, navigation }) => {
 
     return (
         <SafeAreaView style={styles.safeArea}>
-            <View style={styles.container}>
-                <Text style={styles.title}>Welcome User!</Text>
-                <Text style={styles.greeting}>You are logged in successfully.</Text>
-
-                <View style={styles.detailsContainer}>
-                    <Text style={styles.detailsHeader}>Your Details:</Text>
-                    <Text style={styles.detailsText}>Email: {userDetails.email}</Text>
-                    <Text style={styles.detailsText}>Role: {userDetails.role}</Text>
-                </View>
-
-                <View style={styles.buttonContainer}>
+            <ScrollView contentContainerStyle={styles.container}>
+                <View style={styles.headerContainer}>
+                    <Text style={styles.title}>Ongoing Schedules</Text>
                     
-                    <Button 
-                        title="Add Special Collections" 
-                        onPress={() => navigation.navigate('AddSpecialCollection', { userDetails })} 
-                    />
                 </View>
+
+                {/* Regular Schedules (Mock Data) */}
+                <View style={styles.listContainer}>
+                    <Text style={styles.listHeader}>Regular Schedules</Text>
+                    {ongoingMockData.map(item => (
+                        <View key={item.id} style={styles.scheduleItem}>
+                            <View>
+                                <Text style={styles.itemDate}>{item.date}</Text>
+                                <Text style={styles.itemTime}>{item.time}</Text>
+                            </View>
+                            <Text style={[
+                                styles.itemStatus,
+                                item.status === 'Pending' ? styles.statusPending : styles.statusInProgress
+                            ]}>
+                                {item.status}
+                            </Text>
+                        </View>
+                    ))}
+                </View>
+
+                {/* Special Collection Schedules (Real Data) */}
+                <View style={styles.listContainer}>
+                    <Text style={styles.listHeader}>Special Collection Schedules</Text>
+                    {isLoading ? (
+                        <ActivityIndicator size="large" color="#0000ff" style={{ marginVertical: 20 }} />
+                    ) : specialSchedules.length > 0 ? (
+                        specialSchedules.map(item => (
+                            <View key={item._id} style={styles.scheduleItem}>
+                                <View>
+                                    <Text style={styles.itemDate}>{new Date(item.date).toDateString()}</Text>
+                                    <Text style={styles.itemTime}>{item.timeSlot}</Text>
+                                </View>
+                                <Text style={[
+                                    styles.itemStatus,
+                                    item.status === 'Pending' ? styles.statusPending : styles.statusInProgress
+                                ]}>
+                                    {item.status}
+                                </Text>
+                            </View>
+                        ))
+                    ) : (
+                        <Text style={styles.emptyText}>You have no special schedules.</Text>
+                    )}
+                </View>
+
+                {/* Add Special Collection Button */}
+                <TouchableOpacity 
+                    style={styles.addButton}
+                    onPress={() => navigation.navigate('AddSpecialCollection', { userDetails })}
+                >
+                    <Ionicons name="add" size={24} color="white" />
+                    <Text style={styles.addButtonText}>Add Special Collection Schedule</Text>
+                </TouchableOpacity>
                 
-                <View style={styles.buttonContainer}>
+                <View style={styles.logoutButtonContainer}>
                     <Button title="Logout" onPress={handleLogout} color="#ff5c5c" />
                 </View>
-            </View>
+            </ScrollView>
         </SafeAreaView>
     );
 };
@@ -46,61 +115,99 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#f0f4f8',
     },
-    buttonContainer: {
-        width: '80%',
-        marginTop: 20,
-        marginBottom: 10,
-    },
-    logoutButtonContainer: {
-        width: '60%',
-        marginTop: 10,
-    },
     container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
         padding: 20,
+    },
+    headerContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 20,
     },
     title: {
-        fontSize: 28,
+        fontSize: 24,
         fontWeight: 'bold',
-        color: '#333',
-        marginBottom: 8,
+        color: '#2c3e50',
     },
-    greeting: {
-        fontSize: 16,
-        color: '#666',
-        marginBottom: 40,
+    profilePic: {
+        width: 40,
+        height: 40,
+        borderRadius: 20,
     },
-    detailsContainer: {
+    listContainer: {
         backgroundColor: '#fff',
         borderRadius: 10,
-        padding: 20,
-        width: '100%',
-        marginBottom: 30,
+        padding: 15,
+        marginBottom: 20,
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
+        shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 3,
+        shadowRadius: 3,
+        elevation: 2,
     },
-    detailsHeader: {
-        fontSize: 18,
-        fontWeight: '600',
-        color: '#444',
-        marginBottom: 10,
-        borderBottomWidth: 1,
-        borderBottomColor: '#eee',
-        paddingBottom: 5,
-    },
-    detailsText: {
+    listHeader: {
         fontSize: 16,
-        color: '#555',
-        marginBottom: 5,
+        fontWeight: 'bold',
+        marginBottom: 10,
+        color: '#34495e',
     },
-    buttonContainer: {
+    scheduleItem: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingVertical: 12,
+        borderBottomWidth: 1,
+        borderBottomColor: '#f0f0f0',
+    },
+    itemDate: {
+        fontSize: 15,
+        fontWeight: '500',
+    },
+    itemTime: {
+        fontSize: 13,
+        color: '#555',
+    },
+    itemStatus: {
+        fontSize: 13,
+        fontWeight: 'bold',
+        paddingHorizontal: 10,
+        paddingVertical: 4,
+        borderRadius: 12,
+        overflow: 'hidden',
+    },
+    statusPending: {
+        color: '#e67e22',
+        backgroundColor: '#fdf3e6',
+    },
+    statusInProgress: {
+        color: '#27ae60',
+        backgroundColor: '#e8f6ef',
+    },
+    emptyText: {
+        textAlign: 'center',
+        paddingVertical: 20,
+        color: '#777',
+    },
+    addButton: {
+        flexDirection: 'row',
+        backgroundColor: '#2ecc71',
+        padding: 15,
+        borderRadius: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 10,
+        elevation: 2,
+    },
+    addButtonText: {
+        color: 'white',
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginLeft: 10,
+    },
+    logoutButtonContainer: {
+        marginTop: 30,
+        alignSelf: 'center',
         width: '60%',
-        marginTop: 20,
     }
 });
 

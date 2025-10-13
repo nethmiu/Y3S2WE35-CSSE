@@ -45,9 +45,11 @@ const checkAvailability = async (req, res) => {
 // @desc    Create a new special collection schedule
 // @route   POST /api/collections
 const createSchedule = async (req, res) => {
-    const { userId, date, timeSlot, wasteType, location, remarks } = req.body;
+    // --- weight සහ totalAmount මෙහිදී ලබාගැනීම ---
+    const { userId, date, timeSlot, wasteType, location, remarks, weight, totalAmount } = req.body;
 
-    if (!userId || !date || !timeSlot || !wasteType || !location) {
+    // --- validation එකට නව fields එක් කිරීම ---
+    if (!userId || !date || !timeSlot || !wasteType || !location || !weight || !totalAmount) {
         return res.status(400).json({ message: 'Please provide all required fields' });
     }
 
@@ -59,6 +61,8 @@ const createSchedule = async (req, res) => {
             wasteType,
             location,
             remarks,
+            weight, // නව field එක දත්ත සමුදායට එක් කිරීම
+            totalAmount, // නව field එක දත්ත සමුදායට එක් කිරීම
         });
 
         const createdSchedule = await newSchedule.save();
@@ -69,4 +73,36 @@ const createSchedule = async (req, res) => {
     }
 };
 
-module.exports = { checkAvailability, createSchedule };
+// @desc    Get all special collection schedules
+// @route   GET /api/collections/all
+const getAllSchedules = async (req, res) => {
+    try {
+        const schedules = await SpecialCollection.find({})
+            .populate('user', 'email') // User model එකෙන් email එක පමණක් ලබාගැනීම
+            .sort({ date: -1 }); // නවතම ඒවා ඉහළින් පෙන්වීමට
+
+        res.json(schedules);
+    } catch (error) {
+        res.status(500).json({ message: 'Server Error' });
+    }
+};
+
+// @desc    Get logged in user's special collection schedules
+// @route   GET /api/collections/my-schedules/:userId
+const getMySchedules = async (req, res) => {
+    try {
+        const schedules = await SpecialCollection.find({ user: req.params.userId })
+            .sort({ date: -1 }); // නවතම ඒවා ඉහළින් පෙන්වීමට
+
+        res.json(schedules);
+    } catch (error) {
+        res.status(500).json({ message: 'Server Error' });
+    }
+};
+
+module.exports = { 
+    checkAvailability, 
+    createSchedule, 
+    getAllSchedules, 
+    getMySchedules // නව function එක export කිරීම
+};
