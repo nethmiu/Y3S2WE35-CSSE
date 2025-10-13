@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { 
   View, 
   Text, 
@@ -12,55 +12,29 @@ import {
   ScrollView
 } from 'react-native';
 import axios from 'axios';
-import * as LocalAuthentication from 'expo-local-authentication';
-import * as SecureStore from 'expo-secure-store';
-import { Ionicons, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import config from '../config'; 
 
-import config from '../config';
 const API_URL = `http://${config.IP}:${config.PORT}/api/users`;
-const TOKEN_KEY = 'userToken';
 
 export default function LoginScreen({ navigation }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [canUseBiometrics, setCanUseBiometrics] = useState(false);
     const [passwordVisible, setPasswordVisible] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [biometricLoading, setBiometricLoading] = useState(false);
-
-    useEffect(() => {
-        checkBiometricAvailability();
-    }, []);
-
-    const checkBiometricAvailability = async () => {
-        try {
-            const compatible = await LocalAuthentication.hasHardwareAsync();
-            const enrolled = await LocalAuthentication.isEnrolledAsync();
-            const token = await SecureStore.getItemAsync(TOKEN_KEY);
-            
-            if (compatible && enrolled && token) {
-                setCanUseBiometrics(true);
-            }
-        } catch (error) {
-            console.error('Error checking biometric availability:', error);
-        }
-    };
 
     const navigateByUserRole = (user) => {
         if (!user || !user.role) {
-            navigation.replace('MainApp');
+            navigation.replace('Home', { userDetails: user });
             return;
         }
 
         switch (user.role.toLowerCase()) {
-            case 'admin':
-                navigation.replace('AdminDashboard');
-                break;
-            case 'environmentalist':
-                navigation.replace('EnvironmentalistDashboard');
+            case 'manager':
+                navigation.replace('Manager', { userDetails: user });
                 break;
             default:
-                navigation.replace('MainApp'); 
+                navigation.replace('Home', { userDetails: user }); 
                 break;
         }
     };
@@ -71,7 +45,6 @@ export default function LoginScreen({ navigation }) {
             return;
         }
         
-        // Basic email validation
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
             Alert.alert('Error', 'Please enter a valid email address.');
@@ -85,82 +58,28 @@ export default function LoginScreen({ navigation }) {
                 password 
             });
             
-            if (response.data.status === 'success') {
-                const { token, data } = response.data;
-                const { user } = data;
-
-                await SecureStore.setItemAsync(TOKEN_KEY, token);
-                
-                // Small delay for better UX
-                setTimeout(() => {
-                    navigateByUserRole(user);
-                }, 500);
-                
+            if (response.data) {
+                navigateByUserRole(response.data); 
             }
         } catch (error) {
-            console.error('Login error:', error.response?.data || error.message);
-            Alert.alert(
-                'Login Failed', 
-                error.response?.data?.message || 'Unable to connect to server. Please try again.'
-            );
+            // *** මෙහි වෙනස්කම සිදු කර ඇත ***
+            // රතු දෝෂ තිරය පෙන්වන console.error වෙනුවට console.log භාවිතා කිරීම
+            console.log('Login error:', error.response?.data || error.message);
+
+            if (error.response && error.response.status === 401) {
+                Alert.alert(
+                    'Login Failed', 
+                    'The email or password you entered is incorrect. Please try again.'
+                );
+            } else {
+                Alert.alert(
+                    'Connection Error', 
+                    'Could not connect to the server. Please check your internet connection and try again.'
+                );
+            }
         } finally {
             setIsLoading(false);
         }
-    };
-
-    const handleBiometricLogin = async () => {
-        setBiometricLoading(true);
-        try {
-            const result = await LocalAuthentication.authenticateAsync({
-                promptMessage: 'Authenticate to access Eco-Pulse',
-                cancelLabel: 'Cancel',
-                fallbackLabel: 'Use password',
-                disableDeviceFallback: false
-            });
-
-            if (result.success) {
-                const token = await SecureStore.getItemAsync(TOKEN_KEY);
-                if (!token) {
-                    Alert.alert('Authentication Required', 'Please login with email and password first to enable biometric login.');
-                    return;
-                }
-
-                try {
-                    const response = await axios.get(`${API_URL}/me`, {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-                    });
-
-                    const { user } = response.data.data;
-                    setTimeout(() => {
-                        navigateByUserRole(user);
-                    }, 500);
-                    
-                } catch (apiError) {
-                    console.error('API Error during biometric login:', apiError);
-                    await SecureStore.deleteItemAsync(TOKEN_KEY);
-                    Alert.alert('Session Expired', 'Please login with email and password.');
-                }
-            } else {
-                if (result.error !== 'user_cancel') {
-                    Alert.alert('Authentication Failed', 'Biometric authentication was not successful. Please try again.');
-                }
-            }
-        } catch (error) {
-            console.error('Biometric error:', error);
-            Alert.alert('Error', 'Biometric authentication is not available. Please use password login.');
-        } finally {
-            setBiometricLoading(false);
-        }
-    };
-
-    const handleForgotPassword = () => {
-        if (!email) {
-            Alert.alert('Email Required', 'Please enter your email address first to reset your password.');
-            return;
-        }
-        navigation.navigate('ForgotPassword', { email });
     };
 
     return (
@@ -173,7 +92,6 @@ export default function LoginScreen({ navigation }) {
                 showsVerticalScrollIndicator={false}
             >
                 <View style={styles.header}>
-                    
                     <Text style={styles.title}>Login</Text>
                     <Text style={styles.subtitle}>Sign in to continue your waste management</Text>
                 </View>
@@ -189,8 +107,6 @@ export default function LoginScreen({ navigation }) {
                             autoCapitalize="none"
                             keyboardType="email-address"
                             placeholderTextColor="#999"
-                            autoComplete="email"
-                            importantForAutofill="yes"
                         />
                     </View>
 
@@ -203,8 +119,6 @@ export default function LoginScreen({ navigation }) {
                             onChangeText={setPassword}
                             secureTextEntry={!passwordVisible}
                             placeholderTextColor="#999"
-                            autoComplete="password"
-                            importantForAutofill="yes"
                             onSubmitEditing={handleLogin}
                         />
                         <TouchableOpacity 
@@ -218,10 +132,6 @@ export default function LoginScreen({ navigation }) {
                             />
                         </TouchableOpacity>
                     </View>
-
-                    <TouchableOpacity onPress={handleForgotPassword}>
-                        
-                    </TouchableOpacity>
 
                     <TouchableOpacity 
                         style={[styles.loginButton, isLoading && styles.buttonDisabled]} 
@@ -237,29 +147,6 @@ export default function LoginScreen({ navigation }) {
                             </>
                         )}
                     </TouchableOpacity>
-
-                    {canUseBiometrics && (
-                        <TouchableOpacity 
-                            style={[styles.biometricButton, biometricLoading && styles.buttonDisabled]} 
-                            onPress={handleBiometricLogin}
-                            disabled={biometricLoading}
-                        >
-                            {biometricLoading ? (
-                                <ActivityIndicator color="#fff" />
-                            ) : (
-                                <>
-                                    <MaterialCommunityIcons name="fingerprint" size={22} color="#fff" style={styles.buttonIcon} />
-                                    <Text style={styles.buttonText}>Login with Fingerprint</Text>
-                                </>
-                            )}
-                        </TouchableOpacity>
-                    )}
-
-                    <View style={styles.divider}>
-                        <View style={styles.dividerLine} />
-                        
-                        <View style={styles.dividerLine} />
-                    </View>
 
                     <TouchableOpacity 
                         onPress={() => navigation.navigate('Register')}
@@ -286,9 +173,6 @@ const styles = StyleSheet.create({
     header: {
         alignItems: 'center',
         marginBottom: 40
-    },
-    logo: {
-        marginBottom: 16
     },
     title: { 
         fontSize: 28, 
@@ -338,34 +222,11 @@ const styles = StyleSheet.create({
     eyeIcon: {
         padding: 5,
     },
-    forgotPassword: {
-        textAlign: 'center',
-        color: '#007bff',
-        fontWeight: '600',
-        marginBottom: 20,
-    },
     loginButton: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#0e5cecff',
-        padding: 16,
-        borderRadius: 12,
-        marginBottom: 16,
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
-    },
-    biometricButton: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#007bff',
         padding: 16,
         borderRadius: 12,
         marginBottom: 24,
@@ -381,21 +242,6 @@ const styles = StyleSheet.create({
     },
     buttonIcon: {
         marginRight: 8
-    },
-    divider: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 24,
-    },
-    dividerLine: {
-        flex: 1,
-        height: 1,
-        backgroundColor: '#ddd'
-    },
-    dividerText: {
-        marginHorizontal: 16,
-        color: '#7f8c8d',
-        fontSize: 14
     },
     registerContainer: {
         alignItems: 'center',
