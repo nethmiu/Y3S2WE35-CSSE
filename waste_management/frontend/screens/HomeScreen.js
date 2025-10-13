@@ -24,6 +24,14 @@ const HomeScreen = ({ route, navigation }) => {
                     <Text style={styles.detailsText}>Email: {userDetails.email}</Text>
                     <Text style={styles.detailsText}>Role: {userDetails.role}</Text>
                 </View>
+
+                <View style={styles.buttonContainer}>
+                    
+                    <Button 
+                        title="Add Special Collections" 
+                        onPress={() => navigation.navigate('AddSpecialCollection', { userDetails })} 
+                    />
+                </View>
                 
                 <View style={styles.buttonContainer}>
                     <Button title="Logout" onPress={handleLogout} color="#ff5c5c" />
@@ -37,6 +45,15 @@ const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
         backgroundColor: '#f0f4f8',
+    },
+    buttonContainer: {
+        width: '80%',
+        marginTop: 20,
+        marginBottom: 10,
+    },
+    logoutButtonContainer: {
+        width: '60%',
+        marginTop: 10,
     },
     container: {
         flex: 1,

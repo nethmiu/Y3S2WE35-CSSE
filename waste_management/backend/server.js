@@ -5,8 +5,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 
 const userRoutes = require('./routes/userRoutes');
-
-
+const specialCollectionRoutes = require('./routes/specialCollectionRoutes');
 
 
 dotenv.config();
@@ -29,6 +28,7 @@ app.get('/', (req, res) => {
 
 // API Routes
 app.use('/api/users', userRoutes);
+app.use('/api/collections', specialCollectionRoutes);
 
 const PORT = process.env.PORT || 5002;
 
