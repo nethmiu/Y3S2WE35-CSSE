@@ -20,6 +20,14 @@ const SummaryScreen = ({ route, navigation }) => {
                 <Text style={styles.label}>Location:</Text>
                 <Text style={styles.value}>Lat: {createdSchedule.location.latitude.toFixed(4)}, Lon: {createdSchedule.location.longitude.toFixed(4)}</Text>
 
+                {/* --- අලුතින් එකතු කළ කොටස --- */}
+                <Text style={styles.label}>Estimated Weight:</Text>
+                <Text style={styles.value}>{createdSchedule.weight} kg</Text>
+
+                <Text style={styles.label}>Total Amount Paid:</Text>
+                <Text style={styles.value}>LKR {createdSchedule.totalAmount.toFixed(2)}</Text>
+                {/* ----------------------------- */}
+
                 <Text style={styles.label}>Status:</Text>
                 <Text style={[styles.value, { color: 'green', fontWeight: 'bold' }]}>{createdSchedule.status}</Text>
             </View>
