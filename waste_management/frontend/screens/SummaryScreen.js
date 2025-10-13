@@ -4,6 +4,11 @@ import { View, Text, StyleSheet, Button, SafeAreaView } from 'react-native';
 const SummaryScreen = ({ route, navigation }) => {
     const { createdSchedule } = route.params;
 
+    const handleBackToHome = () => {
+        // navigation stack එකේ පළමු තිරය (HomeScreen) වෙත ආපසු යාම
+        navigation.popToTop();
+    };
+
     return (
         <SafeAreaView style={styles.container}>
             <Text style={styles.header}>Schedule Confirmed!</Text>
@@ -20,18 +25,17 @@ const SummaryScreen = ({ route, navigation }) => {
                 <Text style={styles.label}>Location:</Text>
                 <Text style={styles.value}>Lat: {createdSchedule.location.latitude.toFixed(4)}, Lon: {createdSchedule.location.longitude.toFixed(4)}</Text>
 
-                {/* --- අලුතින් එකතු කළ කොටස --- */}
+                
                 <Text style={styles.label}>Estimated Weight:</Text>
                 <Text style={styles.value}>{createdSchedule.weight} kg</Text>
 
                 <Text style={styles.label}>Total Amount Paid:</Text>
                 <Text style={styles.value}>LKR {createdSchedule.totalAmount.toFixed(2)}</Text>
-                {/* ----------------------------- */}
-
+                
                 <Text style={styles.label}>Status:</Text>
                 <Text style={[styles.value, { color: 'green', fontWeight: 'bold' }]}>{createdSchedule.status}</Text>
             </View>
-            <Button title="Back to Home" onPress={() => navigation.navigate('Home')} />
+            <Button title="Back to Home" onPress={handleBackToHome} />
         </SafeAreaView>
     );
 };

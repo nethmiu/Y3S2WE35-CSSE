@@ -10,7 +10,7 @@ const SLOT_LIMIT = 5;
 // @desc    Check available time slots for a given date
 // @route   GET /api/collections/availability
 const checkAvailability = async (req, res) => {
-    const { date } = req.query; // date එන්නේ 'YYYY-MM-DD' format එකෙන්
+    const { date } = req.query; // date in 'YYYY-MM-DD' format
     if (!date) {
         return res.status(400).json({ message: 'Date is required' });
     }
@@ -18,11 +18,11 @@ const checkAvailability = async (req, res) => {
     try {
         const selectedDate = new Date(date);
         
-        // දවසේ ආරම්භය සහ අවසානය සකස් කිරීම
+        // Set the time to the start and end of the day for accurate querying
         const startOfDay = new Date(selectedDate.setUTCHours(0, 0, 0, 0));
         const endOfDay = new Date(selectedDate.setUTCHours(23, 59, 59, 999));
 
-        // අදාළ දිනයේ ඇති සියලුම bookings ලබාගැනීම
+        // Get all bookings for the relevant date
         const bookingsOnDate = await SpecialCollection.find({
             date: { $gte: startOfDay, $lte: endOfDay },
         });
@@ -45,10 +45,10 @@ const checkAvailability = async (req, res) => {
 // @desc    Create a new special collection schedule
 // @route   POST /api/collections
 const createSchedule = async (req, res) => {
-    // --- weight සහ totalAmount මෙහිදී ලබාගැනීම ---
+    // Get the request body
     const { userId, date, timeSlot, wasteType, location, remarks, weight, totalAmount } = req.body;
 
-    // --- validation එකට නව fields එක් කිරීම ---
+    // Basic validation
     if (!userId || !date || !timeSlot || !wasteType || !location || !weight || !totalAmount) {
         return res.status(400).json({ message: 'Please provide all required fields' });
     }
@@ -61,8 +61,8 @@ const createSchedule = async (req, res) => {
             wasteType,
             location,
             remarks,
-            weight, // නව field එක දත්ත සමුදායට එක් කිරීම
-            totalAmount, // නව field එක දත්ත සමුදායට එක් කිරීම
+            weight,
+            totalAmount,
         });
 
         const createdSchedule = await newSchedule.save();
@@ -78,8 +78,8 @@ const createSchedule = async (req, res) => {
 const getAllSchedules = async (req, res) => {
     try {
         const schedules = await SpecialCollection.find({})
-            .populate('user', 'email') // User model එකෙන් email එක පමණක් ලබාගැනීම
-            .sort({ date: -1 }); // නවතම ඒවා ඉහළින් පෙන්වීමට
+            .populate('user', 'email') // get user email only
+            .sort({ date: -1 }); // newest first
 
         res.json(schedules);
     } catch (error) {
@@ -92,7 +92,7 @@ const getAllSchedules = async (req, res) => {
 const getMySchedules = async (req, res) => {
     try {
         const schedules = await SpecialCollection.find({ user: req.params.userId })
-            .sort({ date: -1 }); // නවතම ඒවා ඉහළින් පෙන්වීමට
+            .sort({ date: -1 }); // newest first
 
         res.json(schedules);
     } catch (error) {
@@ -104,5 +104,5 @@ module.exports = {
     checkAvailability, 
     createSchedule, 
     getAllSchedules, 
-    getMySchedules // නව function එක export කිරීම
+    getMySchedules 
 };

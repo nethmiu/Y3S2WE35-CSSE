@@ -13,19 +13,20 @@ import AddSpecialCollectionScreen from './screens/AddSpecialCollectionScreen';
 import MapScreen from './screens/MapScreen';
 import PaymentScreen from './screens/PaymentScreen';
 import SummaryScreen from './screens/SummaryScreen';
+import ScheduleScreen from './screens/ScheduleScreen';
 
 const Stack = createStackNavigator();
 
 export default function App() {
   return (
-    // StripeProvider එක publishableKey එක සමග යෙදුම wrap කිරීම
+    // StripeProvider wrap with my publishable key
     <StripeProvider publishableKey={config.STRIPE_PUBLISHABLE_KEY}>
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Login">
           <Stack.Screen 
             name="Login" 
             component={LoginScreen} 
-            // Login තිරයේ header එක ඉවත් කිරීම
+            // remove header for Login screen
             options={{ headerShown: false }} 
           />
           <Stack.Screen 
@@ -57,6 +58,11 @@ export default function App() {
             name="Summary" 
             component={SummaryScreen} 
             options={{ headerShown: false }} 
+          />
+          <Stack.Screen 
+            name="Schedule" 
+            component={ScheduleScreen} 
+            options={{ title: 'Schedule' }} 
           />
         </Stack.Navigator>
       </NavigationContainer>
