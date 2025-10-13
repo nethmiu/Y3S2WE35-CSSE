@@ -23,18 +23,36 @@ export default function LoginScreen({ navigation }) {
     const [passwordVisible, setPasswordVisible] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
+    // *** Fixed navigation function ***
     const navigateByUserRole = (user) => {
         if (!user || !user.role) {
-            navigation.replace('Home', { userDetails: user });
+            // Default user role සඳහා navigation stack එක reset කිරීම
+            navigation.reset({
+                index: 0,
+                routes: [{ 
+                    name: 'MainUserTabs', 
+                    params: { userDetails: user } 
+                }],
+            });
             return;
         }
 
         switch (user.role.toLowerCase()) {
             case 'manager':
-                navigation.replace('Manager', { userDetails: user });
+                navigation.reset({
+                    index: 0,
+                    routes: [{ name: 'Manager', params: { userDetails: user } }],
+                });
                 break;
-            default:
-                navigation.replace('Home', { userDetails: user }); 
+            default: // 'user' සහ අනෙකුත් roles සඳහා
+                // MainUserTabs වෙත යොමු කිරීමට navigation stack එක reset කිරීම
+                navigation.reset({
+                    index: 0,
+                    routes: [{ 
+                        name: 'MainUserTabs', 
+                        params: { userDetails: user } 
+                    }],
+                });
                 break;
         }
     };
@@ -62,8 +80,6 @@ export default function LoginScreen({ navigation }) {
                 navigateByUserRole(response.data); 
             }
         } catch (error) {
-            // *** මෙහි වෙනස්කම සිදු කර ඇත ***
-            // රතු දෝෂ තිරය පෙන්වන console.error වෙනුවට console.log භාවිතා කිරීම
             console.log('Login error:', error.response?.data || error.message);
 
             if (error.response && error.response.status === 401) {
@@ -149,7 +165,7 @@ export default function LoginScreen({ navigation }) {
                     </TouchableOpacity>
 
                     <TouchableOpacity 
-                        onPress={() => navigation.navigate('Register')}
+                        onPress={() => { /* navigation.navigate('Register') */ }}
                         style={styles.registerContainer}
                     >
                        

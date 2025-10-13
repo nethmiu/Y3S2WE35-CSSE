@@ -2,8 +2,8 @@ import React from 'react';
 import { View, Text, StyleSheet, Button, SafeAreaView } from 'react-native';
 
 const HomeScreen = ({ route, navigation }) => {
-    // LoginScreen එකෙන් pass කළ userDetails මෙතනින් ලබාගැනීම
-    const { userDetails } = route.params;
+    // LoginScreen එකෙන් pass කළ userDetails මෙතනින් ලබාගැනීම (safe handling)
+    const userDetails = route.params?.userDetails || { email: 'Unknown', role: 'User' };
 
     const handleLogout = () => {
         // Navigation stack එක reset කර Login තිරයට නැවත යොමු කිරීම
@@ -25,14 +25,13 @@ const HomeScreen = ({ route, navigation }) => {
                     <Text style={styles.detailsText}>Role: {userDetails.role}</Text>
                 </View>
                 
-                {/* --- New Button Added Here --- */}
+                {/* --- Collections Schedules Button --- */}
                 <View style={styles.buttonContainer}>
                     <Button 
                         title="Collections Schedules" 
                         onPress={() => navigation.navigate('Schedule', { userDetails })} 
                     />
                 </View>
-                {/* --------------------------- */}
                 
                 <View style={styles.buttonContainer}>
                     <Button title="Logout" onPress={handleLogout} color="#ff5c5c" />
@@ -91,8 +90,8 @@ const styles = StyleSheet.create({
         marginBottom: 5,
     },
     buttonContainer: {
-        width: '80%', // Made the buttons wider for better appearance
-        marginVertical: 10, // Added vertical margin to space out the buttons
+        width: '80%',
+        marginVertical: 10,
     }
 });
 
