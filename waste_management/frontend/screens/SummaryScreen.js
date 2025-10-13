@@ -2,12 +2,11 @@ import React from 'react';
 import { View, Text, StyleSheet, Button, SafeAreaView } from 'react-native';
 
 const SummaryScreen = ({ route, navigation }) => {
-    // PaymentScreen එකෙන් එවන createdSchedule සහ userDetails යන දෙකම ලබාගැනීම
-    const { createdSchedule, userDetails } = route.params;
+    const { createdSchedule } = route.params;
 
     const handleBackToHome = () => {
-        // HomeScreen එකට නැවත යන විට, userDetails දත්ත සමග යොමු කිරීම
-        navigation.navigate('Home', { userDetails });
+        // navigation stack එකේ පළමු තිරය (HomeScreen) වෙත ආපසු යාම
+        navigation.popToTop();
     };
 
     return (
@@ -26,6 +25,7 @@ const SummaryScreen = ({ route, navigation }) => {
                 <Text style={styles.label}>Location:</Text>
                 <Text style={styles.value}>Lat: {createdSchedule.location.latitude.toFixed(4)}, Lon: {createdSchedule.location.longitude.toFixed(4)}</Text>
 
+                
                 <Text style={styles.label}>Estimated Weight:</Text>
                 <Text style={styles.value}>{createdSchedule.weight} kg</Text>
 

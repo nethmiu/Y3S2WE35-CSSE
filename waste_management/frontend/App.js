@@ -13,6 +13,7 @@ import AddSpecialCollectionScreen from './screens/AddSpecialCollectionScreen';
 import MapScreen from './screens/MapScreen';
 import PaymentScreen from './screens/PaymentScreen';
 import SummaryScreen from './screens/SummaryScreen';
+import ScheduleScreen from './screens/ScheduleScreen';
 
 const Stack = createStackNavigator();
 
@@ -57,6 +58,11 @@ export default function App() {
             name="Summary" 
             component={SummaryScreen} 
             options={{ headerShown: false }} 
+          />
+          <Stack.Screen 
+            name="Schedule" 
+            component={ScheduleScreen} 
+            options={{ title: 'Schedule' }} 
           />
         </Stack.Navigator>
       </NavigationContainer>
