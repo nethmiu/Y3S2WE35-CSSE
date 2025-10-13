@@ -8,7 +8,8 @@ const COLLECTIONS_API = `http://${config.IP}:${config.PORT}/api/collections`;
 const PAYMENTS_API = `http://${config.IP}:${config.PORT}/api/payments`;
 
 const PaymentScreen = ({ route, navigation }) => {
-    const { scheduleDetails } = route.params;
+    // AddSpecialCollectionScreen එකෙන් එවන scheduleDetails සහ userDetails යන දෙකම ලබාගැනීම
+    const { scheduleDetails, userDetails } = route.params;
     const { confirmPayment } = useStripe();
     
     const [clientSecret, setClientSecret] = useState(null);
@@ -16,14 +17,11 @@ const PaymentScreen = ({ route, navigation }) => {
     const [isPaying, setIsPaying] = useState(false);
 
     useEffect(() => {
-        // Screen එක load වූ වහාම backend එකෙන් client_secret එක ලබාගැනීම
         const fetchPaymentIntentClientSecret = async () => {
             try {
-                // --- මුදල smallest unit එකට හැරවීම (LKR 350.50 -> 35050) ---
                 const amountInCents = Math.round(scheduleDetails.totalAmount * 100);
-
                 const response = await axios.post(`${PAYMENTS_API}/create-payment-intent`, {
-                    amount: amountInCents, // ගණනය කළ ගතික මුදල backend එකට යැවීම
+                    amount: amountInCents,
                 });
                 setClientSecret(response.data.clientSecret);
             } catch (error) {
@@ -44,7 +42,6 @@ const PaymentScreen = ({ route, navigation }) => {
 
         setIsPaying(true);
 
-        // 1. Stripe SDK එක භාවිතා කර ගෙවීම තහවුරු කිරීම
         const { paymentIntent, error } = await confirmPayment(clientSecret, {
             paymentMethodType: 'Card',
         });
@@ -55,7 +52,6 @@ const PaymentScreen = ({ route, navigation }) => {
             return;
         }
 
-        // 2. ගෙවීම සාර්ථක නම්, අපගේ දත්ත සමුදායේ schedule එක සටහන් කිරීම
         if (paymentIntent && paymentIntent.status === 'Succeeded') {
             try {
                 const { data: createdSchedule } = await axios.post(COLLECTIONS_API, scheduleDetails);
@@ -63,7 +59,9 @@ const PaymentScreen = ({ route, navigation }) => {
                 Alert.alert('Payment Successful!', 'Your special collection has been scheduled.', [
                     {
                         text: 'OK',
-                        onPress: () => navigation.replace('Summary', { createdSchedule }),
+                        // *** මෙම පේළිය යාවත්කාලීන කර ඇත ***
+                        // SummaryScreen එකට යන විට, userDetails දත්ත ද සමග යොමු කිරීම
+                        onPress: () => navigation.replace('Summary', { createdSchedule, userDetails }),
                     },
                 ]);
             } catch (saveError) {
@@ -91,10 +89,8 @@ const PaymentScreen = ({ route, navigation }) => {
                 <Text style={styles.summaryText}>Weight: {scheduleDetails.weight} kg</Text>
             </View>
             
-            {/* --- මුදල ගතිකව පෙන්වීම --- */}
             <Text style={styles.amount}>Total Amount: LKR {scheduleDetails.totalAmount.toFixed(2)}</Text>
 
-            {/* Stripe Card Input Field */}
             <CardField
                 postalCodeEnabled={false}
                 style={styles.cardField}

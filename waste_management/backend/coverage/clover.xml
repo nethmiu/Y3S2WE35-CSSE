@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1760338035318" clover="3.2.0">
-  <project timestamp="1760338035319" name="All files">
-    <metrics statements="45" coveredstatements="45" conditionals="13" coveredconditionals="13" methods="5" coveredmethods="5" elements="63" coveredelements="63" complexity="0" loc="45" ncloc="45" packages="3" files="3" classes="3"/>
+<coverage generated="1760339828697" clover="3.2.0">
+  <project timestamp="1760339828697" name="All files">
+    <metrics statements="51" coveredstatements="51" conditionals="13" coveredconditionals="13" methods="6" coveredmethods="6" elements="70" coveredelements="70" complexity="0" loc="51" ncloc="51" packages="3" files="3" classes="3"/>
     <package name="controllers">
-      <metrics statements="34" coveredstatements="34" conditionals="13" coveredconditionals="13" methods="5" coveredmethods="5"/>
+      <metrics statements="39" coveredstatements="39" conditionals="13" coveredconditionals="13" methods="6" coveredmethods="6"/>
       <file name="specialCollectionController.js" path="D:\Y3S2WE35-CSSE\waste_management\backend\controllers\specialCollectionController.js">
-        <metrics statements="34" coveredstatements="34" conditionals="13" coveredconditionals="13" methods="5" coveredmethods="5"/>
+        <metrics statements="39" coveredstatements="39" conditionals="13" coveredconditionals="13" methods="6" coveredmethods="6"/>
         <line num="1" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
         <line num="8" count="1" type="stmt"/>
@@ -39,7 +39,12 @@
         <line num="80" count="2" type="stmt"/>
         <line num="84" count="1" type="stmt"/>
         <line num="86" count="1" type="stmt"/>
-        <line num="90" count="1" type="stmt"/>
+        <line num="92" count="1" type="stmt"/>
+        <line num="93" count="2" type="stmt"/>
+        <line num="94" count="2" type="stmt"/>
+        <line num="97" count="1" type="stmt"/>
+        <line num="99" count="1" type="stmt"/>
+        <line num="103" count="1" type="stmt"/>
       </file>
     </package>
     <package name="models">
@@ -53,16 +58,17 @@
       </file>
     </package>
     <package name="routes">
-      <metrics statements="7" coveredstatements="7" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      <metrics statements="8" coveredstatements="8" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
       <file name="specialCollectionRoutes.js" path="D:\Y3S2WE35-CSSE\waste_management\backend\routes\specialCollectionRoutes.js">
-        <metrics statements="7" coveredstatements="7" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <metrics statements="8" coveredstatements="8" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
-        <line num="3" count="1" type="stmt"/>
-        <line num="6" count="1" type="stmt"/>
-        <line num="9" count="1" type="stmt"/>
+        <line num="8" count="1" type="stmt"/>
         <line num="11" count="1" type="stmt"/>
-        <line num="13" count="1" type="stmt"/>
+        <line num="14" count="1" type="stmt"/>
+        <line num="16" count="1" type="stmt"/>
+        <line num="19" count="1" type="stmt"/>
+        <line num="21" count="1" type="stmt"/>
       </file>
     </package>
   </project>

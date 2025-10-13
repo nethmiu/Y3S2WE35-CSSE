@@ -5,14 +5,14 @@ import config from '../config';
 
 const API_URL = `http://${config.IP}:${config.PORT}/api/collections`;
 
-// Ongoing Schedules සඳහා Mock Data
+// Mock data for Ongoing Regular Schedules
 const ongoingMockData = [
     { id: '1', date: '15 October 2025', time: '11:00 AM', status: 'In progress' },
     { id: '2', date: '16 October 2025', time: '11:00 AM', status: 'Pending' },
     { id: '3', date: '17 October 2025', time: '11:00 AM', status: 'Pending' },
 ];
 
-// FlatList එකට ඉහළින් පෙන්වන සියලුම දේවල් මෙම Header Component එකට ඇතුළත් කිරීම
+// Header Component
 const ListHeader = ({ userDetails }) => (
     <>
         <Text style={styles.title}>Welcome Manager!</Text>
@@ -37,7 +37,7 @@ const ListHeader = ({ userDetails }) => (
             ))}
         </View>
 
-        {/* Special Collections ලැයිස්තුව සඳහා தலைப்பு */}
+        {/* Special Collections List Header */}
         <Text style={[styles.listHeader, { marginTop: 20, marginLeft: 15 }]}>
             All Users Special Collection Schedules
         </Text>

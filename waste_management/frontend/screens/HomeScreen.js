@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Button, SafeAreaView, ScrollView, ActivityIndicator, Image, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import config from '../config';
-import { Ionicons } from '@expo/vector-icons'; // Icons සඳහා
+import { Ionicons } from '@expo/vector-icons'; 
 
 const API_URL = `http://${config.IP}:${config.PORT}/api/collections`;
 
-// Ongoing Regular Schedules සඳහා Mock Data
+// Mock data for Regular Schedules
 const ongoingMockData = [
     { id: '1', date: '30 August 2025', time: '11:00 AM', status: 'In progress' },
     { id: '2', date: '30 August 2025', time: '11:00 AM', status: 'Pending' },
@@ -19,7 +19,7 @@ const HomeScreen = ({ route, navigation }) => {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        // User ගේ special schedules පමණක් backend එකෙන් ලබාගැනීම
+        //get User-specific Special Collection Schedules 
         const fetchMySchedules = async () => {
             try {
                 const { data } = await axios.get(`${API_URL}/my-schedules/${userDetails._id}`);

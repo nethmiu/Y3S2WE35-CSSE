@@ -3,18 +3,18 @@ const express = require('express');
 const specialCollectionRoutes = require('./routes/specialCollectionRoutes');
 const SpecialCollection = require('./models/specialCollectionModel');
 
-// Express app එකක් test කිරීම සඳහා සකස් කිරීම
+// Set up Express app for testing
 const app = express();
 app.use(express.json());
 app.use('/api/collections', specialCollectionRoutes);
 
-// SpecialCollection model එකේ functions mock කිරීම
+// Mocking the SpecialCollection model
 jest.mock('./models/specialCollectionModel');
 
 // =================== Test Suite for Special Collections ===================
 describe('Special Collection API', () => {
 
-    // එක් එක් test එකට පෙර mocks reset කිරීම
+    // mock reset before each test
     beforeEach(() => {
         jest.clearAllMocks();
     });
@@ -92,25 +92,14 @@ describe('Special Collection API', () => {
         });
     });
 
-    // --- 100% Coverage සඳහා අලුතින් එකතු කළ Test කොටස ---
     // ------------------ Testing GET /api/collections/all ------------------
     describe('GET /all', () => {
 
         it('should return all schedules successfully (Positive Case)', async () => {
-            const mockSchedules = [
-                { user: { email: 'user1@example.com' }, date: '2025-10-10' },
-                { user: { email: 'user2@example.com' }, date: '2025-10-09' },
-            ];
-            
-            // find, populate, සහ sort යන Mongoose functions අනුකරණය කිරීම
-            const mockQuery = {
-                populate: jest.fn().mockReturnThis(),
-                sort: jest.fn().mockResolvedValue(mockSchedules),
-            };
+            const mockSchedules = [ { user: { email: 'user1@example.com' } }, { user: { email: 'user2@example.com' } }];
+            const mockQuery = { populate: jest.fn().mockReturnThis(), sort: jest.fn().mockResolvedValue(mockSchedules) };
             SpecialCollection.find.mockReturnValue(mockQuery);
-    
             const response = await request(app).get('/api/collections/all');
-    
             expect(response.statusCode).toBe(200);
             expect(response.body).toEqual(mockSchedules);
             expect(SpecialCollection.find).toHaveBeenCalledWith({});
@@ -119,15 +108,39 @@ describe('Special Collection API', () => {
         });
     
         it('should return a 500 error if fetching all schedules fails (Error Case)', async () => {
-            // Mongoose query එකේ දෝෂයක් ඇති වන ලෙස අනුකරණය කිරීම
-            const mockQuery = {
-                populate: jest.fn().mockReturnThis(),
-                sort: jest.fn().mockRejectedValue(new Error('Database fetch error')),
-            };
+            const mockQuery = { populate: jest.fn().mockReturnThis(), sort: jest.fn().mockRejectedValue(new Error('Database fetch error')) };
             SpecialCollection.find.mockReturnValue(mockQuery);
-    
             const response = await request(app).get('/api/collections/all');
-    
+            expect(response.statusCode).toBe(500);
+            expect(response.body.message).toBe('Server Error');
+        });
+    });
+
+   
+    // ------------------ Testing GET /api/collections/my-schedules/:userId ------------------
+    describe('GET /my-schedules/:userId', () => {
+
+        const userId = '60d0fe4f5311236168a109ca';
+
+        it('should return schedules for a specific user (Positive Case)', async () => {
+            const mockUserSchedules = [ { user: userId, date: '2025-10-10' }, { user: userId, date: '2025-10-09' }];
+            const mockQuery = { sort: jest.fn().mockResolvedValue(mockUserSchedules) };
+            SpecialCollection.find.mockReturnValue(mockQuery);
+
+            const response = await request(app).get(`/api/collections/my-schedules/${userId}`);
+
+            expect(response.statusCode).toBe(200);
+            expect(response.body).toEqual(mockUserSchedules);
+            expect(SpecialCollection.find).toHaveBeenCalledWith({ user: userId });
+            expect(mockQuery.sort).toHaveBeenCalledWith({ date: -1 });
+        });
+
+        it('should return a 500 error if fetching user schedules fails (Error Case)', async () => {
+            const mockQuery = { sort: jest.fn().mockRejectedValue(new Error('DB error')) };
+            SpecialCollection.find.mockReturnValue(mockQuery);
+
+            const response = await request(app).get(`/api/collections/my-schedules/${userId}`);
+
             expect(response.statusCode).toBe(500);
             expect(response.body.message).toBe('Server Error');
         });
