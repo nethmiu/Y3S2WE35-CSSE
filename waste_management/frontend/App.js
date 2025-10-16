@@ -37,7 +37,7 @@ function MainUserTabs({ route }) {
           }
           return <Ionicons name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: '#2ecc71',
+        tabBarActiveTintColor: '#099928ff',
         tabBarInactiveTintColor: 'gray',
         headerShown: false,
       })}

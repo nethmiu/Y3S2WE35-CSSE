@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Button, SafeAreaView, FlatList, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, FlatList, ActivityIndicator } from 'react-native';
 import axios from 'axios';
 import config from '../config';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import IconCommunity from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const API_URL = `http://${config.IP}:${config.PORT}/api/collections`;
 
@@ -15,32 +17,57 @@ const ongoingMockData = [
 // Header Component
 const ListHeader = ({ userDetails }) => (
     <>
-        <Text style={styles.title}>Welcome Manager!</Text>
-        <Text style={styles.greeting}>{userDetails.email}</Text>
+        {/* Welcome Section */}
+        <View style={styles.welcomeCard}>
+            <View style={styles.welcomeIconContainer}>
+                <Icon name="admin-panel-settings" size={40} color="#4CAF50" />
+            </View>
+            <Text style={styles.title}>Welcome Manager!</Text>
+            <Text style={styles.greeting}>{userDetails.email}</Text>
+        </View>
 
         {/* Ongoing Schedules (Mock Data) */}
-        <View style={styles.listContainer}>
-            <Text style={styles.listHeader}>Ongoing Regular Schedules</Text>
+        <View style={styles.sectionCard}>
+            <View style={styles.sectionHeader}>
+                <IconCommunity name="calendar-clock" size={24} color="#4CAF50" />
+                <Text style={styles.sectionTitle}>Ongoing Regular Schedules</Text>
+            </View>
             {ongoingMockData.map(item => (
                 <View key={item.id} style={styles.scheduleItem}>
-                    <View>
-                        <Text style={styles.itemDate}>{item.date}</Text>
-                        <Text style={styles.itemTime}>{item.time}</Text>
+                    <View style={styles.scheduleLeft}>
+                        <View style={styles.iconBadge}>
+                            <Icon name="event" size={20} color="#4CAF50" />
+                        </View>
+                        <View style={styles.scheduleInfo}>
+                            <Text style={styles.itemDate}>{item.date}</Text>
+                            <View style={styles.timeRow}>
+                                <Icon name="access-time" size={14} color="#7F8C8D" />
+                                <Text style={styles.itemTime}>{item.time}</Text>
+                            </View>
+                        </View>
                     </View>
-                    <Text style={[
-                        styles.itemStatus,
+                    <View style={[
+                        styles.statusBadge,
                         item.status === 'Pending' ? styles.statusPending : styles.statusInProgress
                     ]}>
-                        {item.status}
-                    </Text>
+                        <Text style={[
+                            styles.statusText,
+                            item.status === 'Pending' ? styles.statusPendingText : styles.statusInProgressText
+                        ]}>
+                            {item.status}
+                        </Text>
+                    </View>
                 </View>
             ))}
         </View>
 
         {/* Special Collections List Header */}
-        <Text style={[styles.listHeader, { marginTop: 20, marginLeft: 15 }]}>
-            All Users Special Collection Schedules
-        </Text>
+        <View style={styles.sectionCard}>
+            <View style={styles.sectionHeader}>
+                <IconCommunity name="delete-variant" size={24} color="#4CAF50" />
+                <Text style={styles.sectionTitle}>Special Collection Schedules</Text>
+            </View>
+        </View>
     </>
 );
 
@@ -74,25 +101,44 @@ const ManagerScreen = ({ route, navigation }) => {
     };
 
     const renderScheduleItem = ({ item }) => (
-        <View style={styles.scheduleItem}>
-            <View>
-                <Text style={styles.itemDate}>{new Date(item.date).toDateString()}</Text>
-                <Text style={styles.itemTime}>{item.timeSlot}</Text>
-                <Text style={styles.itemUser}>{item.user.email}</Text>
+        <View style={styles.specialScheduleItem}>
+            <View style={styles.scheduleLeft}>
+                <View style={styles.iconBadge}>
+                    <IconCommunity name="delete-variant" size={20} color="#4CAF50" />
+                </View>
+                <View style={styles.scheduleInfo}>
+                    <Text style={styles.itemDate}>{new Date(item.date).toDateString()}</Text>
+                    <View style={styles.timeRow}>
+                        <Icon name="access-time" size={14} color="#7F8C8D" />
+                        <Text style={styles.itemTime}>{item.timeSlot}</Text>
+                    </View>
+                    <View style={styles.userRow}>
+                        <Icon name="person" size={14} color="#7F8C8D" />
+                        <Text style={styles.itemUser}>{item.user.email}</Text>
+                    </View>
+                </View>
             </View>
-            <Text style={[
-                styles.itemStatus,
+            <View style={[
+                styles.statusBadge,
                 item.status === 'Pending' ? styles.statusPending : styles.statusInProgress
             ]}>
-                {item.status}
-            </Text>
+                <Text style={[
+                    styles.statusText,
+                    item.status === 'Pending' ? styles.statusPendingText : styles.statusInProgressText
+                ]}>
+                    {item.status}
+                </Text>
+            </View>
         </View>
     );
 
     if (isLoading) {
         return (
             <SafeAreaView style={styles.loaderContainer}>
-                <ActivityIndicator size="large" color="#0000ff" />
+                <View style={styles.loadingContent}>
+                    <ActivityIndicator size="large" color="#4CAF50" />
+                    <Text style={styles.loadingText}>Loading schedules...</Text>
+                </View>
             </SafeAreaView>
         );
     }
@@ -106,10 +152,18 @@ const ManagerScreen = ({ route, navigation }) => {
                 ListHeaderComponent={<ListHeader userDetails={userDetails} />}
                 ListFooterComponent={
                     <View style={styles.buttonContainer}>
-                        <Button title="Logout" onPress={handleLogout} color="#ff5c5c" />
+                        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+                            <Icon name="logout" size={22} color="#fff" />
+                            <Text style={styles.logoutButtonText}>Logout</Text>
+                        </TouchableOpacity>
                     </View>
                 }
-                ListEmptyComponent={<Text style={styles.emptyText}>No special schedules found.</Text>}
+                ListEmptyComponent={
+                    <View style={styles.emptyContainer}>
+                        <Icon name="inbox" size={60} color="#BDC3C7" />
+                        <Text style={styles.emptyText}>No special schedules found.</Text>
+                    </View>
+                }
                 contentContainerStyle={styles.container}
             />
         </SafeAreaView>
@@ -119,98 +173,211 @@ const ManagerScreen = ({ route, navigation }) => {
 const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
-        backgroundColor: '#f0f4f8',
+        backgroundColor: '#F5F7FA',
     },
     loaderContainer: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+        backgroundColor: '#F5F7FA',
+    },
+    loadingContent: {
+        alignItems: 'center',
+    },
+    loadingText: {
+        marginTop: 15,
+        fontSize: 16,
+        color: '#4CAF50',
+        fontWeight: '600',
     },
     container: {
-        padding: 20,
-    },
-    title: {
-        fontSize: 28,
-        fontWeight: 'bold',
-        color: '#333',
-        textAlign: 'center',
-    },
-    greeting: {
-        fontSize: 16,
-        color: '#666',
-        textAlign: 'center',
-        marginBottom: 30,
-    },
-    listContainer: {
-        backgroundColor: '#fff',
-        borderRadius: 10,
         padding: 15,
+    },
+    welcomeCard: {
+        backgroundColor: '#fff',
+        borderRadius: 16,
+        padding: 25,
         marginBottom: 20,
+        alignItems: 'center',
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 3,
+        shadowRadius: 8,
+        elevation: 4,
     },
-    listHeader: {
+    welcomeIconContainer: {
+        width: 80,
+        height: 80,
+        borderRadius: 40,
+        backgroundColor: '#E8F5E9',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 15,
+    },
+    title: {
+        fontSize: 26,
+        fontWeight: 'bold',
+        color: '#2C3E50',
+        marginBottom: 5,
+    },
+    greeting: {
+        fontSize: 15,
+        color: '#7F8C8D',
+    },
+    sectionCard: {
+        backgroundColor: '#fff',
+        borderRadius: 16,
+        padding: 15,
+        marginBottom: 15,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 8,
+        elevation: 4,
+    },
+    sectionHeader: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 15,
+        paddingBottom: 12,
+        borderBottomWidth: 2,
+        borderBottomColor: '#E8F5E9',
+    },
+    sectionTitle: {
         fontSize: 18,
         fontWeight: 'bold',
-        marginBottom: 10,
-        color: '#2c3e50',
+        color: '#2C3E50',
+        marginLeft: 10,
     },
     scheduleItem: {
-        backgroundColor: '#fff',
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingVertical: 10,
-        paddingHorizontal: 15,
+        paddingVertical: 12,
+        paddingHorizontal: 10,
         borderBottomWidth: 1,
-        borderBottomColor: '#eee',
+        borderBottomColor: '#F0F0F0',
+    },
+    specialScheduleItem: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        backgroundColor: '#fff',
+        paddingVertical: 15,
+        paddingHorizontal: 15,
+        marginBottom: 10,
+        borderRadius: 12,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.08,
+        shadowRadius: 4,
+        elevation: 2,
+    },
+    scheduleLeft: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        flex: 1,
+    },
+    iconBadge: {
+        width: 42,
+        height: 42,
+        borderRadius: 21,
+        backgroundColor: '#E8F5E9',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginRight: 12,
+    },
+    scheduleInfo: {
+        flex: 1,
     },
     itemDate: {
         fontSize: 16,
-        fontWeight: '500',
+        fontWeight: '600',
+        color: '#2C3E50',
+        marginBottom: 4,
+    },
+    timeRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 2,
     },
     itemTime: {
         fontSize: 14,
-        color: '#555',
+        color: '#7F8C8D',
+        marginLeft: 5,
     },
-    itemUser: {
-        fontSize: 12,
-        color: '#7f8c8d',
-        fontStyle: 'italic',
+    userRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
         marginTop: 4,
     },
-    itemStatus: {
-        fontSize: 14,
+    itemUser: {
+        fontSize: 13,
+        color: '#95A5A6',
+        marginLeft: 5,
+        fontStyle: 'italic',
+    },
+    statusBadge: {
+        paddingHorizontal: 12,
+        paddingVertical: 6,
+        borderRadius: 20,
+        borderWidth: 1,
+    },
+    statusText: {
+        fontSize: 13,
         fontWeight: 'bold',
-        paddingHorizontal: 10,
-        paddingVertical: 4,
-        borderRadius: 12,
-        overflow: 'hidden',
     },
     statusPending: {
-        color: '#e67e22',
-        backgroundColor: '#fdf3e6',
+        backgroundColor: '#FFF3E0',
+        borderColor: '#FF9800',
+    },
+    statusPendingText: {
+        color: '#F57C00',
     },
     statusInProgress: {
-        color: '#27ae60',
-        backgroundColor: '#e8f6ef',
+        backgroundColor: '#E8F5E9',
+        borderColor: '#4CAF50',
+    },
+    statusInProgressText: {
+        color: '#2E7D32',
+    },
+    emptyContainer: {
+        backgroundColor: '#fff',
+        padding: 40,
+        borderRadius: 16,
+        alignItems: 'center',
+        marginTop: 20,
     },
     emptyText: {
         textAlign: 'center',
-        marginTop: 20,
-        color: '#777',
-        backgroundColor: '#fff',
-        padding: 20,
-        borderRadius: 10,
+        marginTop: 15,
+        fontSize: 16,
+        color: '#95A5A6',
     },
     buttonContainer: {
         marginTop: 30,
-        alignSelf: 'center',
-        width: '60%',
-    }
+        marginBottom: 20,
+        paddingHorizontal: 20,
+    },
+    logoutButton: {
+        backgroundColor: '#E74C3C',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 15,
+        borderRadius: 12,
+        shadowColor: '#E74C3C',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 6,
+        elevation: 5,
+    },
+    logoutButtonText: {
+        color: '#fff',
+        fontSize: 17,
+        fontWeight: 'bold',
+        marginLeft: 10,
+    },
 });
 
 export default ManagerScreen;
