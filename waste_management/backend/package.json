@@ -1,15 +1,12 @@
 {
-  "name": "eco-pulse-backend",
+  "name": "waste-management-backend",
   "version": "1.0.0",
+  "description": "Backend for Waste Management System",
   "main": "server.js",
   "scripts": {
     "test": "jest --coverage",
-    "start": "nodemon server.js"
+    "start": "node server.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
   "dependencies": {
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
