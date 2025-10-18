@@ -11,6 +11,7 @@ dotenv.config();
 const userRoutes = require('./routes/userRoutes');
 const specialCollectionRoutes = require('./routes/specialCollectionRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
+const dashboardRoutes = require('./routes/dashboardRoutes');
 
 const app = express();
 app.use(cors());
@@ -33,6 +34,7 @@ app.get('/', (req, res) => {
 app.use('/api/users', userRoutes);
 app.use('/api/collections', specialCollectionRoutes);
 app.use('/api/payments', paymentRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 
 const PORT = process.env.PORT || 5002;
 
