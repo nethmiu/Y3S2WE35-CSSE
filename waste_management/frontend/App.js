@@ -1,104 +1,52 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { StripeProvider } from '@stripe/stripe-react-native';
-import { Ionicons } from '@expo/vector-icons';
 
 import config from './config';
 
-// Screens
+// Import navigation components
+import { MainUserTabs, CollectorTabs } from './navigation';
+
+// Import screens
 import LoginScreen from './screens/LoginScreen';
 import ManagerScreen from './screens/ManagerScreen';
 import AddSpecialCollectionScreen from './screens/AddSpecialCollectionScreen';
 import MapScreen from './screens/MapScreen';
 import PaymentScreen from './screens/PaymentScreen';
 import SummaryScreen from './screens/SummaryScreen';
-import ScheduleScreen from './screens/ScheduleScreen';
-import CollectorDashboard from './screens/CollectorDashboard';
-import HomeScreen from './screens/HomeScreen'; // ADD PROFILE SCREEN IMPORT
-import DashboardScreen from './screens/DashboardScreen'; // ADD DASHBOARD SCREEN IMPORT
 import CollectionScheduleScreen from './screens/CollectionScheduleScreen';
 
 const Stack = createStackNavigator();
-const Tab = createBottomTabNavigator();
 
-// Bottom Tab Navigator එක නිර්මාණය කිරීම
-function MainUserTabs({ route }) {
-  // Route parameters ලබාගන්න
-  const userDetails = route?.params?.userDetails;
-
-  return (
-    <Tab.Navigator
-      screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size }) => {
-          let iconName;
-          if (route.name === 'Dashboard') {
-            iconName = focused ? 'speedometer' : 'speedometer-outline';
-          } else if (route.name === 'Schedule') {
-            iconName = focused ? 'list' : 'list-outline';
-          } else if (route.name === 'Home') {
-            iconName = focused ? 'person' : 'person-outline';
-          }
-          return <Ionicons name={iconName} size={size} color={color} />;
-        },
-        tabBarActiveTintColor: '#099928ff',
-        tabBarInactiveTintColor: 'gray',
-        headerShown: false,
-      })}
-    >
-      <Tab.Screen 
-        name="Dashboard" 
-        component={DashboardScreen} // CHANGED TO DASHBOARD SCREEN
-        initialParams={{ userDetails }} 
-        options={{ title: 'Dashboard' }}
-      />
-      <Tab.Screen 
-        name="Schedule" 
-        component={ScheduleScreen}
-        initialParams={{ userDetails }}
-        options={{ title: 'My Schedule' }}
-      />
-      <Tab.Screen 
-        name="Home" 
-        component={HomeScreen} // NEW PROFILE TAB
-        initialParams={{ userDetails }}
-        options={{ title: 'Profile' }}
-      />
-    </Tab.Navigator>
-  );
-}
-
-
-
-// ප්‍රධාන App Component එක
+// Main App Component
 export default function App() {
   return (
     <StripeProvider publishableKey={config.STRIPE_PUBLISHABLE_KEY}>
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Login">
-          {/* Login සහ අනෙකුත් ප්‍රධාන තිර */}
+          {/* Login Screen */}
           <Stack.Screen 
             name="Login" 
             component={LoginScreen} 
             options={{ headerShown: false }} 
           />
           
-          {/* MainUserTabs - userDetails parameters සමග */}
+          {/* Regular User Tabs */}
           <Stack.Screen 
             name="MainUserTabs" 
             component={MainUserTabs} 
             options={{ headerShown: false }} 
           />
 
-          {/* Collector Dashboard - NEW */}
+          {/* Collector Tabs */}
           <Stack.Screen 
-            name="CollectorDashboard" 
-            component={CollectorDashboard} 
+            name="CollectorTabs" 
+            component={CollectorTabs} 
             options={{ headerShown: false }} 
           />
           
-          {/* අනෙකුත් screens සඳහා header පෙන්වනවා */}
+          {/* Other Screens */}
           <Stack.Screen 
             name="Manager" 
             component={ManagerScreen} 
