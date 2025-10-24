@@ -5,7 +5,9 @@ import {
   StyleSheet, 
   TouchableOpacity, 
   Alert,
-  Modal 
+  Modal,
+  TextInput,
+  ScrollView
 } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { Ionicons } from '@expo/vector-icons';
@@ -18,8 +20,12 @@ export default function QRScannerScreen({ route, navigation }) {
   const [permission, requestPermission] = useCameraPermissions();
   const [scanned, setScanned] = useState(false);
   const [showResult, setShowResult] = useState(false);
+  const [showCompleteModal, setShowCompleteModal] = useState(false);
   const [scanResult, setScanResult] = useState(null);
-  const { userDetails } = route.params;
+  const [selectedSchedule, setSelectedSchedule] = useState(null);
+  const [wasteLevel, setWasteLevel] = useState('');
+  const [notes, setNotes] = useState('');
+  const { userDetails, schedule } = route.params || {};
 
   useEffect(() => {
     if (!permission?.granted) {
@@ -60,15 +66,81 @@ export default function QRScannerScreen({ route, navigation }) {
     setScanResult(null);
   };
 
-  const handleCompleteCollection = async (scheduleId) => {
-    try {
-      navigation.navigate('CompleteCollection', { 
-        scheduleId,
-        userDetails 
-      });
-    } catch (error) {
-      Alert.alert('Error', 'Failed to process collection');
+  const handleCompleteCollection = (scheduleData) => {
+    setSelectedSchedule(scheduleData);
+    setShowCompleteModal(true);
+    setShowResult(false); // Close the scan result modal
+  };
+
+  const submitCollection = async () => {
+    if (!wasteLevel || wasteLevel < 0 || wasteLevel > 100) {
+      Alert.alert('Error', 'Please enter a valid waste level (0-100)');
+      return;
     }
+
+    try {
+      const response = await axios.put(`${API_URL}/complete-collection`, {
+        scheduleId: selectedSchedule._id,
+        wasteLevel: parseInt(wasteLevel),
+        notes: notes
+      });
+
+      if (response.data.success) {
+        Alert.alert('Success', 'Collection completed successfully!');
+        setShowCompleteModal(false);
+        setWasteLevel('');
+        setNotes('');
+        resetScanner();
+        navigation.goBack(); // Go back to dashboard
+      } else {
+        Alert.alert('Error', response.data.message || 'Failed to complete collection');
+      }
+    } catch (error) {
+      console.error('Error completing collection:', error.response?.data || error.message);
+      Alert.alert('Error', 'Failed to complete collection. Please try again.');
+    }
+  };
+
+  // Helper functions for multiple bins
+  const getBinNames = (scheduleData) => {
+    if (!scheduleData.bins || scheduleData.bins.length === 0) {
+      return 'Unknown Bin';
+    }
+    
+    if (scheduleData.bins.length === 1) {
+      return scheduleData.bins[0].binName || 'Unknown Bin';
+    }
+    
+    return `${scheduleData.bins.length} Bins`;
+  };
+
+  const getBinTypes = (scheduleData) => {
+    if (!scheduleData.bins || scheduleData.bins.length === 0) {
+      return 'Unknown';
+    }
+    
+    const types = [...new Set(scheduleData.bins.map(bin => bin.binType))];
+    return types.join(', ');
+  };
+
+  const getFirstBinLocation = (scheduleData) => {
+    if (!scheduleData.bins || scheduleData.bins.length === 0) {
+      return 'No address specified';
+    }
+    
+    return scheduleData.bins[0].location?.address || 'No address specified';
+  };
+
+  const getTotalCapacity = (scheduleData) => {
+    if (!scheduleData.bins || scheduleData.bins.length === 0) {
+      return 0;
+    }
+    
+    return scheduleData.bins.reduce((total, bin) => total + (bin.capacity || 0), 0);
+  };
+
+  const formatTimeSlot = (timeSlot) => {
+    return timeSlot || 'Not specified';
   };
 
   if (!permission) {
@@ -162,7 +234,7 @@ export default function QRScannerScreen({ route, navigation }) {
 
                   <TouchableOpacity 
                     style={styles.actionButton}
-                    onPress={() => handleCompleteCollection(scanResult.data.schedule?._id)}
+                    onPress={() => handleCompleteCollection(scanResult.data.schedule)}
                   >
                     <Ionicons name="checkmark" size={20} color="#fff" />
                     <Text style={styles.actionButtonText}>Complete Collection</Text>
@@ -192,6 +264,93 @@ export default function QRScannerScreen({ route, navigation }) {
                 <Text style={styles.scanAgainText}>Scan Again</Text>
               </TouchableOpacity>
             </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Complete Collection Modal */}
+      <Modal
+        visible={showCompleteModal}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setShowCompleteModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.completeModalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Complete Collection</Text>
+              <TouchableOpacity onPress={() => setShowCompleteModal(false)}>
+                <Ionicons name="close" size={24} color="#7f8c8d" />
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView 
+              style={styles.modalBody}
+              contentContainerStyle={styles.modalBodyContent} // FIXED: Added contentContainerStyle
+            >
+              {selectedSchedule && (
+                <View style={styles.collectionInfo}>
+                  <Text style={styles.infoLabel}>Customer:</Text>
+                  <Text style={styles.infoText}>{selectedSchedule.user?.email}</Text>
+                  
+                  <Text style={styles.infoLabel}>Bin Details:</Text>
+                  <Text style={styles.infoText}>
+                    {getBinNames(selectedSchedule)} • {getBinTypes(selectedSchedule)} • {getTotalCapacity(selectedSchedule)}L
+                  </Text>
+                  
+                  <Text style={styles.infoLabel}>Address:</Text>
+                  <Text style={styles.infoText}>
+                    {getFirstBinLocation(selectedSchedule)}
+                  </Text>
+                  
+                  <Text style={styles.infoLabel}>Time Slot:</Text>
+                  <Text style={styles.infoText}>
+                    {formatTimeSlot(selectedSchedule.timeSlot)}
+                  </Text>
+                </View>
+              )}
+
+              <Text style={styles.label}>Waste Level (%) *</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Enter waste level (0-100)"
+                keyboardType="numeric"
+                value={wasteLevel}
+                onChangeText={setWasteLevel}
+                maxLength={3}
+              />
+
+              <Text style={styles.label}>Notes (Optional)</Text>
+              <TextInput
+                style={[styles.input, styles.textArea]}
+                placeholder="Add any notes about the collection..."
+                multiline
+                numberOfLines={3}
+                value={notes}
+                onChangeText={setNotes}
+              />
+
+              <View style={styles.modalActions}>
+                <TouchableOpacity 
+                  style={styles.cancelButton}
+                  onPress={() => setShowCompleteModal(false)}
+                >
+                  <Text style={styles.cancelButtonText}>Cancel</Text>
+                </TouchableOpacity>
+                
+                <TouchableOpacity 
+                  style={[
+                    styles.submitButton,
+                    (!wasteLevel || wasteLevel < 0 || wasteLevel > 100) && styles.submitButtonDisabled
+                  ]}
+                  onPress={submitCollection}
+                  disabled={!wasteLevel || wasteLevel < 0 || wasteLevel > 100}
+                >
+                  <Ionicons name="checkmark" size={20} color="#fff" />
+                  <Text style={styles.submitButtonText}>Complete Collection</Text>
+                </TouchableOpacity>
+              </View>
+            </ScrollView>
           </View>
         </View>
       </Modal>
@@ -261,6 +420,11 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     maxHeight: '80%',
   },
+  completeModalContent: {
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    maxHeight: '80%',
+  },
   modalHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -276,7 +440,9 @@ const styles = StyleSheet.create({
   },
   modalBody: {
     padding: 24,
-    alignItems: 'center',
+  },
+  modalBodyContent: {
+    // FIXED: Add any layout styles for modal body content here
   },
   successIcon: {
     marginBottom: 16,
@@ -356,5 +522,84 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#fff',
     fontWeight: '600',
+  },
+  // Complete Collection Modal Styles
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    padding: 20,
+  },
+  collectionInfo: {
+    backgroundColor: '#f8f9fa',
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 16,
+  },
+  infoLabel: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#7f8c8d',
+    marginBottom: 2,
+  },
+  infoText: {
+    fontSize: 14,
+    color: '#2c3e50',
+    marginBottom: 8,
+  },
+  label: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#2c3e50',
+    marginBottom: 8,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 16,
+    fontSize: 14,
+    backgroundColor: '#fafafa',
+  },
+  textArea: {
+    height: 80,
+    textAlignVertical: 'top',
+  },
+  modalActions: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  cancelButton: {
+    flex: 1,
+    padding: 16,
+    borderRadius: 8,
+    backgroundColor: '#f8f9fa',
+    borderWidth: 1,
+    borderColor: '#ddd',
+    alignItems: 'center',
+  },
+  cancelButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#7f8c8d',
+  },
+  submitButton: {
+    flex: 2,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#27ae60',
+    padding: 16,
+    borderRadius: 8,
+  },
+  submitButtonDisabled: {
+    backgroundColor: '#bdc3c7',
+  },
+  submitButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+    marginLeft: 8,
   },
 });

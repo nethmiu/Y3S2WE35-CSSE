@@ -32,17 +32,19 @@ function MainUserTabs({ route }) {
       })}
     >
       <Tab.Screen 
-        name="Dashboard" 
-        component={DashboardScreen}
-        initialParams={{ userDetails }} 
-        options={{ title: 'Dashboard' }}
-      />
-      <Tab.Screen 
         name="Schedule" 
         component={ScheduleScreen}
         initialParams={{ userDetails }}
         options={{ title: 'My Schedule' }}
       />
+      
+      <Tab.Screen 
+        name="Dashboard" 
+        component={DashboardScreen}
+        initialParams={{ userDetails }} 
+        options={{ title: 'Regular' }}
+      />
+      
       <Tab.Screen 
         name="Home" 
         component={HomeScreen}

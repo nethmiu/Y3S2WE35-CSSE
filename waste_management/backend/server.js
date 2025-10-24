@@ -43,7 +43,7 @@ app.use('/api/payments', paymentRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 
 app.use('/api/bins', binRoutes);
-app.use('/api/collectors', collectorRoutes);
+app.use('/api/collector', collectorRoutes);
 app.use('/api/regular-collections', collectionRoutes);
 
 

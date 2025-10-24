@@ -7,9 +7,7 @@ import {
   TouchableOpacity,
   Alert,
   RefreshControl,
-  ActivityIndicator,
-  Modal,
-  TextInput
+  ActivityIndicator
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import axios from 'axios';
@@ -29,29 +27,67 @@ export default function CollectorDashboard({ route, navigation }) {
     inProgress: 0
   });
 
-  // Modal states
-  const [showCollectionModal, setShowCollectionModal] = useState(false);
-  const [selectedSchedule, setSelectedSchedule] = useState(null);
-  const [wasteLevel, setWasteLevel] = useState('');
-  const [notes, setNotes] = useState('');
+  // Helper functions for multiple bins
+  const getBinNames = (schedule) => {
+    if (!schedule.bins || schedule.bins.length === 0) {
+      return 'Unknown Bin';
+    }
+    
+    if (schedule.bins.length === 1) {
+      return schedule.bins[0].binName || 'Unknown Bin';
+    }
+    
+    return `${schedule.bins.length} Bins`;
+  };
+
+  const getBinTypes = (schedule) => {
+    if (!schedule.bins || schedule.bins.length === 0) {
+      return 'Unknown';
+    }
+    
+    const types = [...new Set(schedule.bins.map(bin => bin.binType))];
+    return types.join(', ');
+  };
+
+  const getFirstBinLocation = (schedule) => {
+    if (!schedule.bins || schedule.bins.length === 0) {
+      return 'No address specified';
+    }
+    
+    return schedule.bins[0].location?.address || 'No address specified';
+  };
+
+  const getTotalCapacity = (schedule) => {
+    if (!schedule.bins || schedule.bins.length === 0) {
+      return 0;
+    }
+    
+    return schedule.bins.reduce((total, bin) => total + (bin.capacity || 0), 0);
+  };
 
   const loadTodaySchedules = async () => {
     try {
       setLoading(true);
+      console.log('Loading schedules from:', `${API_URL}/schedules`);
+      
       const response = await axios.get(`${API_URL}/schedules`);
-      const schedules = response.data;
-      setTodaySchedules(schedules);
+      console.log('Schedules response:', response.data);
+      
+      // Handle both response formats
+      const schedules = response.data.data || response.data;
+      setTodaySchedules(Array.isArray(schedules) ? schedules : []);
       
       // Calculate stats
-      const total = schedules.length;
+      const total = schedules.length || 0;
       const completed = schedules.filter(item => item.status === 'completed').length;
       const inProgress = schedules.filter(item => item.status === 'in-progress').length;
       const pending = total - completed - inProgress;
       
       setStats({ total, completed, pending, inProgress });
     } catch (error) {
-      console.error('Error loading schedules:', error);
-      Alert.alert('Error', 'Failed to load schedules');
+      console.error('Error loading schedules:', error.response?.data || error.message);
+      Alert.alert('Error', 'Failed to load schedules. Please check your connection.');
+      setTodaySchedules([]);
     } finally {
       setLoading(false);
     }
@@ -65,45 +101,31 @@ export default function CollectorDashboard({ route, navigation }) {
 
   const handleStartCollection = async (schedule) => {
     try {
-      // Update schedule status to in-progress
-      await axios.put(`${API_URL}/update-status`, {
+      console.log('Starting collection for schedule:', schedule._id);
+      
+      const response = await axios.put(`${API_URL}/update-status`, {
         scheduleId: schedule._id,
         status: 'in-progress'
       });
       
-      Alert.alert('Started', 'Collection marked as in progress');
-      loadTodaySchedules(); // Refresh data
+      if (response.data.success) {
+        Alert.alert('Started', 'Collection marked as in progress');
+        loadTodaySchedules(); // Refresh data
+      } else {
+        Alert.alert('Error', response.data.message || 'Failed to start collection');
+      }
     } catch (error) {
-      Alert.alert('Error', 'Failed to start collection');
+      console.error('Error starting collection:', error.response?.data || error.message);
+      Alert.alert('Error', 'Failed to start collection. Please try again.');
     }
   };
 
-  const handleCompleteCollection = (schedule) => {
-    setSelectedSchedule(schedule);
-    setShowCollectionModal(true);
-  };
-
-  const submitCollection = async () => {
-    if (!wasteLevel || wasteLevel < 0 || wasteLevel > 100) {
-      Alert.alert('Error', 'Please enter a valid waste level (0-100)');
-      return;
-    }
-
-    try {
-      await axios.put(`${API_URL}/complete-collection`, {
-        scheduleId: selectedSchedule._id,
-        wasteLevel: parseInt(wasteLevel),
-        notes: notes
-      });
-
-      Alert.alert('Success', 'Collection completed successfully!');
-      setShowCollectionModal(false);
-      setWasteLevel('');
-      setNotes('');
-      loadTodaySchedules(); // Refresh data
-    } catch (error) {
-      Alert.alert('Error', 'Failed to complete collection');
-    }
+  // ADD THIS FUNCTION: Navigation to Map
+  const handleNavigateToLocation = (schedule) => {
+    navigation.navigate('CollectorMap', { 
+      userDetails,
+      schedule 
+    });
   };
 
   const handleRejectCollection = (schedule) => {
@@ -121,15 +143,20 @@ export default function CollectorDashboard({ route, navigation }) {
             }
 
             try {
-              await axios.put(`${API_URL}/reject-collection`, {
+              const response = await axios.put(`${API_URL}/reject-collection`, {
                 scheduleId: schedule._id,
                 reason: reason
               });
 
-              Alert.alert('Rejected', 'Collection has been rejected');
-              loadTodaySchedules();
+              if (response.data.success) {
+                Alert.alert('Rejected', 'Collection has been rejected');
+                loadTodaySchedules();
+              } else {
+                Alert.alert('Error', response.data.message || 'Failed to reject collection');
+              }
             } catch (error) {
-              Alert.alert('Error', 'Failed to reject collection');
+              console.error('Error rejecting collection:', error.response?.data || error.message);
+              Alert.alert('Error', 'Failed to reject collection. Please try again.');
             }
           }
         }
@@ -161,11 +188,6 @@ export default function CollectorDashboard({ route, navigation }) {
     return timeSlot || 'Not specified';
   };
 
-  const formatAddress = (location) => {
-    if (!location) return 'No address specified';
-    return location.address || 'No address specified';
-  };
-
   useEffect(() => {
     loadTodaySchedules();
   }, []);
@@ -180,7 +202,7 @@ export default function CollectorDashboard({ route, navigation }) {
         </View>
         <TouchableOpacity 
           style={styles.scanButton}
-          onPress={() => navigation.navigate('QRScanner')}
+          onPress={() => navigation.navigate('QRScanner', { userDetails })}
         >
           <Ionicons name="qr-code" size={20} color="#fff" />
         </TouchableOpacity>
@@ -188,6 +210,7 @@ export default function CollectorDashboard({ route, navigation }) {
 
       <ScrollView 
         style={styles.content}
+        contentContainerStyle={styles.contentContainer} // FIXED: Added contentContainerStyle
         refreshControl={
           <RefreshControl 
             refreshing={refreshing} 
@@ -240,7 +263,7 @@ export default function CollectorDashboard({ route, navigation }) {
 
               <TouchableOpacity 
                 style={styles.actionButton}
-                onPress={() => navigation.navigate('QRScanner')}
+                onPress={() => navigation.navigate('QRScanner', { userDetails })}
               >
                 <Ionicons name="qr-code" size={24} color="#fff" />
                 <Text style={styles.actionText}>Scan QR</Text>
@@ -287,17 +310,20 @@ export default function CollectorDashboard({ route, navigation }) {
                         <Text style={styles.customerName}>
                           {schedule.user?.email || 'Unknown Customer'}
                         </Text>
-                        <Text style={styles.scheduleAddress}>
-                          {formatAddress(schedule.bin?.location)}
+                        <Text style={styles.binName}>
+                          {getBinNames(schedule)}
                         </Text>
                         <View style={styles.scheduleDetails}>
                           <Text style={styles.binType}>
-                            {schedule.bin?.binType || 'Unknown'} • {schedule.bin?.capacity || '0'}L
+                            {getBinTypes(schedule)} • {getTotalCapacity(schedule)}L
                           </Text>
                           <Text style={styles.scheduleTime}>
                             {formatTimeSlot(schedule.timeSlot)}
                           </Text>
                         </View>
+                        <Text style={styles.scheduleAddress}>
+                          {getFirstBinLocation(schedule)}
+                        </Text>
                       </View>
                       <View style={[styles.statusBadge, { backgroundColor: getStatusColor(schedule.status) }]}>
                         <Ionicons 
@@ -309,9 +335,18 @@ export default function CollectorDashboard({ route, navigation }) {
                       </View>
                     </View>
 
+                    {/* UPDATED: Schedule Actions with Navigation */}
                     <View style={styles.scheduleActions}>
                       {schedule.status === 'scheduled' && (
                         <>
+                          <TouchableOpacity 
+                            style={[styles.actionBtn, styles.navigateBtn]}
+                            onPress={() => handleNavigateToLocation(schedule)}
+                          >
+                            <Ionicons name="navigate" size={16} color="#fff" />
+                            <Text style={styles.actionBtnText}>Navigate</Text>
+                          </TouchableOpacity>
+                          
                           <TouchableOpacity 
                             style={[styles.actionBtn, styles.startBtn]}
                             onPress={() => handleStartCollection(schedule)}
@@ -331,13 +366,26 @@ export default function CollectorDashboard({ route, navigation }) {
                       )}
 
                       {schedule.status === 'in-progress' && (
-                        <TouchableOpacity 
-                          style={[styles.actionBtn, styles.completeBtn]}
-                          onPress={() => handleCompleteCollection(schedule)}
-                        >
-                          <Ionicons name="checkmark" size={16} color="#fff" />
-                          <Text style={styles.actionBtnText}>Complete</Text>
-                        </TouchableOpacity>
+                        <>
+                          <TouchableOpacity 
+                            style={[styles.actionBtn, styles.navigateBtn]}
+                            onPress={() => handleNavigateToLocation(schedule)}
+                          >
+                            <Ionicons name="navigate" size={16} color="#fff" />
+                            <Text style={styles.actionBtnText}>Navigate</Text>
+                          </TouchableOpacity>
+                          
+                          <TouchableOpacity 
+                            style={[styles.actionBtn, styles.completeBtn]}
+                            onPress={() => navigation.navigate('QRScanner', { 
+                              userDetails,
+                              schedule // Pass schedule data to QR scanner
+                            })}
+                          >
+                            <Ionicons name="checkmark" size={16} color="#fff" />
+                            <Text style={styles.actionBtnText}>Complete</Text>
+                          </TouchableOpacity>
+                        </>
                       )}
 
                       {schedule.status === 'completed' && (
@@ -364,7 +412,7 @@ export default function CollectorDashboard({ route, navigation }) {
 
                     {schedule.notes && (
                       <View style={styles.notesContainer}>
-                        <Text style={styles.notesLabel}>Notes:</Text>
+                        <Text style={styles.notesLabel}>Collector Notes:</Text>
                         <Text style={styles.notesText}>{schedule.notes}</Text>
                       </View>
                     )}
@@ -390,85 +438,6 @@ export default function CollectorDashboard({ route, navigation }) {
           </>
         )}
       </ScrollView>
-
-      {/* Complete Collection Modal */}
-      <Modal
-        visible={showCollectionModal}
-        animationType="slide"
-        transparent={true}
-        onRequestClose={() => setShowCollectionModal(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Complete Collection</Text>
-              <TouchableOpacity onPress={() => setShowCollectionModal(false)}>
-                <Ionicons name="close" size={24} color="#7f8c8d" />
-              </TouchableOpacity>
-            </View>
-
-            <ScrollView style={styles.modalBody}>
-              {selectedSchedule && (
-                <View style={styles.collectionInfo}>
-                  <Text style={styles.infoLabel}>Customer:</Text>
-                  <Text style={styles.infoText}>{selectedSchedule.user?.email}</Text>
-                  
-                  <Text style={styles.infoLabel}>Address:</Text>
-                  <Text style={styles.infoText}>
-                    {formatAddress(selectedSchedule.bin?.location)}
-                  </Text>
-                  
-                  <Text style={styles.infoLabel}>Bin Details:</Text>
-                  <Text style={styles.infoText}>
-                    {selectedSchedule.bin?.binType} • {selectedSchedule.bin?.capacity}L
-                  </Text>
-                </View>
-              )}
-
-              <Text style={styles.label}>Waste Level (%) *</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Enter waste level (0-100)"
-                keyboardType="numeric"
-                value={wasteLevel}
-                onChangeText={setWasteLevel}
-                maxLength={3}
-              />
-
-              <Text style={styles.label}>Notes (Optional)</Text>
-              <TextInput
-                style={[styles.input, styles.textArea]}
-                placeholder="Add any notes about the collection..."
-                multiline
-                numberOfLines={3}
-                value={notes}
-                onChangeText={setNotes}
-              />
-
-              <View style={styles.modalActions}>
-                <TouchableOpacity 
-                  style={styles.cancelButton}
-                  onPress={() => setShowCollectionModal(false)}
-                >
-                  <Text style={styles.cancelButtonText}>Cancel</Text>
-                </TouchableOpacity>
-                
-                <TouchableOpacity 
-                  style={[
-                    styles.submitButton,
-                    (!wasteLevel || wasteLevel < 0 || wasteLevel > 100) && styles.submitButtonDisabled
-                  ]}
-                  onPress={submitCollection}
-                  disabled={!wasteLevel || wasteLevel < 0 || wasteLevel > 100}
-                >
-                  <Ionicons name="checkmark" size={20} color="#fff" />
-                  <Text style={styles.submitButtonText}>Complete Collection</Text>
-                </TouchableOpacity>
-              </View>
-            </ScrollView>
-          </View>
-        </View>
-      </Modal>
     </View>
   );
 }
@@ -509,6 +478,9 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
   },
+  contentContainer: {
+    // FIXED: Add any layout styles that should apply to ScrollView content here
+  },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -520,7 +492,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#7f8c8d',
   },
-  // Stats Section
+  // ... rest of your styles remain the same
   statsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -552,7 +524,6 @@ const styles = StyleSheet.create({
     marginTop: 2,
     textAlign: 'center',
   },
-  // Actions Section
   actionsContainer: {
     flexDirection: 'row',
     marginHorizontal: 16,
@@ -574,7 +545,6 @@ const styles = StyleSheet.create({
     marginLeft: 6,
     fontSize: 12,
   },
-  // Schedule Section
   scheduleSection: {
     marginHorizontal: 16,
     marginBottom: 20,
@@ -616,6 +586,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: '#2c3e50',
+    marginBottom: 4,
+  },
+  binName: {
+    fontSize: 14,
+    color: '#3498db',
+    fontWeight: '600',
     marginBottom: 4,
   },
   scheduleAddress: {
@@ -671,6 +647,9 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     minWidth: 80,
     justifyContent: 'center',
+  },
+  navigateBtn: {
+    backgroundColor: '#9b59b6',
   },
   startBtn: {
     backgroundColor: '#3498db',
@@ -762,7 +741,6 @@ const styles = StyleSheet.create({
     color: '#2c3e50',
     minWidth: 25,
   },
-  // Empty State
   emptyState: {
     backgroundColor: '#fff',
     borderRadius: 12,
@@ -779,105 +757,5 @@ const styles = StyleSheet.create({
     color: '#bdc3c7',
     marginTop: 4,
     textAlign: 'center',
-  },
-  // Modal Styles
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'center',
-    padding: 20,
-  },
-  modalContent: {
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    maxHeight: '80%',
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ecf0f1',
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#2c3e50',
-  },
-  modalBody: {
-    padding: 16,
-  },
-  collectionInfo: {
-    backgroundColor: '#f8f9fa',
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 16,
-  },
-  infoLabel: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: '#7f8c8d',
-    marginBottom: 2,
-  },
-  infoText: {
-    fontSize: 14,
-    color: '#2c3e50',
-    marginBottom: 8,
-  },
-  label: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#2c3e50',
-    marginBottom: 8,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 16,
-    fontSize: 14,
-    backgroundColor: '#fafafa',
-  },
-  textArea: {
-    height: 80,
-    textAlignVertical: 'top',
-  },
-  modalActions: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  cancelButton: {
-    flex: 1,
-    padding: 16,
-    borderRadius: 8,
-    backgroundColor: '#f8f9fa',
-    borderWidth: 1,
-    borderColor: '#ddd',
-    alignItems: 'center',
-  },
-  cancelButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#7f8c8d',
-  },
-  submitButton: {
-    flex: 2,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#27ae60',
-    padding: 16,
-    borderRadius: 8,
-  },
-  submitButtonDisabled: {
-    backgroundColor: '#bdc3c7',
-  },
-  submitButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
-    marginLeft: 8,
   },
 });

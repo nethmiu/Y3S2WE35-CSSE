@@ -16,6 +16,10 @@ import MapScreen from './screens/MapScreen';
 import PaymentScreen from './screens/PaymentScreen';
 import SummaryScreen from './screens/SummaryScreen';
 import CollectionScheduleScreen from './screens/CollectionScheduleScreen';
+import ScheduleListScreen from './screens/ScheduleListScreen';
+import CollectorMapScreen from './screens/CollectorMapScreen';
+import QRScannerScreen from './screens/QRScannerScreen';
+import CollectorProfileScreen from './screens/CollectorProfileScreen';
 
 const Stack = createStackNavigator();
 
@@ -56,6 +60,26 @@ export default function App() {
             name="CollectionSchedule" 
             component={CollectionScheduleScreen} 
             options={{ title: 'Collection Schedule' }} 
+          />
+          <Stack.Screen 
+            name="ScheduleList" 
+            component={ScheduleListScreen} 
+            options={{ title: 'All Schedules' }} 
+          />
+          <Stack.Screen 
+            name="CollectorMap" 
+            component={CollectorMapScreen} 
+            options={{ title: 'Navigation' }} 
+          />
+          <Stack.Screen 
+            name="QRScanner" 
+            component={QRScannerScreen} 
+            options={{ title: 'Scan Bin QR Code' }} 
+          />
+          <Stack.Screen 
+            name="CollectorProfile" 
+            component={CollectorProfileScreen} 
+            options={{ title: 'Profile' }} 
           />
           <Stack.Screen 
             name="AddSpecialCollection" 

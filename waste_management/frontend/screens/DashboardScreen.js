@@ -409,7 +409,7 @@ export default function DashboardScreen({ route, navigation }) {
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.title}>Dashboard</Text>
+        
         <Text style={styles.subtitle}>Welcome back, {userDetails?.email}</Text>
       </View>
 
@@ -774,10 +774,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#f8f9fa',
   },
   header: {
-    backgroundColor: '#0e5cecff',
-    padding: 20,
-    paddingTop: 60,
-  },
+    backgroundColor: 'white',
+    paddingTop: 40,
+    paddingBottom: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e8ecef',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+},
   title: {
     fontSize: 24,
     fontWeight: 'bold',
@@ -785,9 +792,10 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 16,
-    color: '#fff',
+    color: '#7f8c8d',
     opacity: 0.8,
     marginTop: 4,
+    paddingHorizontal: 16,
   },
   content: {
     flex: 1,
