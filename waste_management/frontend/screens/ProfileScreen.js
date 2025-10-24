@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-const HomeScreen = ({ route, navigation }) => {
+const ProfileScreen = ({ route, navigation }) => {
     // LoginScreen එකෙන් pass කළ userDetails මෙතනින් ලබාගැනීම (safe handling)
     const userDetails = route.params?.userDetails || { email: 'Unknown', role: 'User' };
     
@@ -252,4 +252,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default HomeScreen;
+export default ProfileScreen;

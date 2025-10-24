@@ -15,7 +15,7 @@ const userSchema = mongoose.Schema(
         role: {
             type: String,
             required: true,
-            enum: ['user', 'manager'], // Role එක user හෝ manager විය හැක
+            enum: ['user', 'manager','collector'], //collector was added by chav 
             default: 'user',
         },
     },

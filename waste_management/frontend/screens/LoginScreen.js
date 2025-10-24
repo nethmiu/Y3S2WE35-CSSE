@@ -44,6 +44,15 @@ export default function LoginScreen({ navigation }) {
                     routes: [{ name: 'Manager', params: { userDetails: user } }],
                 });
                 break;
+            case 'collector': 
+            navigation.reset({
+                index: 0,
+                routes: [{ 
+                    name: 'CollectorDashboard', 
+                    params: { userDetails: user } 
+                }],
+                });
+                break;
             default: // 'user' සහ අනෙකුත් roles සඳහා
                 // MainUserTabs වෙත යොමු කිරීමට navigation stack එක reset කිරීම
                 navigation.reset({

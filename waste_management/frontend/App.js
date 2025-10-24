@@ -9,13 +9,16 @@ import config from './config';
 
 // Screens
 import LoginScreen from './screens/LoginScreen';
-import HomeScreen from './screens/HomeScreen';
 import ManagerScreen from './screens/ManagerScreen';
 import AddSpecialCollectionScreen from './screens/AddSpecialCollectionScreen';
 import MapScreen from './screens/MapScreen';
 import PaymentScreen from './screens/PaymentScreen';
 import SummaryScreen from './screens/SummaryScreen';
 import ScheduleScreen from './screens/ScheduleScreen';
+import CollectorDashboard from './screens/CollectorDashboard';
+import ProfileScreen from './screens/ProfileScreen'; // ADD PROFILE SCREEN IMPORT
+import DashboardScreen from './screens/DashboardScreen'; // ADD DASHBOARD SCREEN IMPORT
+import CollectionScheduleScreen from './screens/CollectionScheduleScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -30,10 +33,12 @@ function MainUserTabs({ route }) {
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
-          if (route.name === 'Home') {
-            iconName = focused ? 'home' : 'home-outline';
+          if (route.name === 'Dashboard') {
+            iconName = focused ? 'speedometer' : 'speedometer-outline';
           } else if (route.name === 'Schedule') {
             iconName = focused ? 'list' : 'list-outline';
+          } else if (route.name === 'Profile') {
+            iconName = focused ? 'person' : 'person-outline';
           }
           return <Ionicons name={iconName} size={size} color={color} />;
         },
@@ -43,14 +48,22 @@ function MainUserTabs({ route }) {
       })}
     >
       <Tab.Screen 
-        name="Home" 
-        component={HomeScreen}
+        name="Dashboard" 
+        component={DashboardScreen} // CHANGED TO DASHBOARD SCREEN
         initialParams={{ userDetails }} 
+        options={{ title: 'Dashboard' }}
       />
       <Tab.Screen 
         name="Schedule" 
         component={ScheduleScreen}
         initialParams={{ userDetails }}
+        options={{ title: 'My Schedule' }}
+      />
+      <Tab.Screen 
+        name="Profile" 
+        component={ProfileScreen} // NEW PROFILE TAB
+        initialParams={{ userDetails }}
+        options={{ title: 'Profile' }}
       />
     </Tab.Navigator>
   );
@@ -75,12 +88,24 @@ export default function App() {
             component={MainUserTabs} 
             options={{ headerShown: false }} 
           />
+
+          {/* Collector Dashboard - NEW */}
+          <Stack.Screen 
+            name="CollectorDashboard" 
+            component={CollectorDashboard} 
+            options={{ headerShown: false }} 
+          />
           
           {/* අනෙකුත් screens සඳහා header පෙන්වනවා */}
           <Stack.Screen 
             name="Manager" 
             component={ManagerScreen} 
             options={{ title: 'Manager Dashboard' }} 
+          />
+          <Stack.Screen 
+            name="CollectionSchedule" 
+            component={CollectionScheduleScreen} 
+            options={{ title: 'Collection Schedule' }} 
           />
           <Stack.Screen 
             name="AddSpecialCollection" 
