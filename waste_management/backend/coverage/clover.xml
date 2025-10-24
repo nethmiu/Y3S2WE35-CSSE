@@ -1,10 +1,294 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1760613331176" clover="3.2.0">
-  <project timestamp="1760613331176" name="All files">
-    <metrics statements="51" coveredstatements="51" conditionals="13" coveredconditionals="13" methods="6" coveredmethods="6" elements="70" coveredelements="70" complexity="0" loc="51" ncloc="51" packages="3" files="3" classes="3"/>
+<coverage generated="1761321937166" clover="3.2.0">
+  <project timestamp="1761321937166" name="All files">
+    <metrics statements="379" coveredstatements="305" conditionals="105" coveredconditionals="62" methods="46" coveredmethods="35" elements="530" coveredelements="402" complexity="0" loc="379" ncloc="379" packages="3" files="14" classes="14"/>
     <package name="controllers">
-      <metrics statements="39" coveredstatements="39" conditionals="13" coveredconditionals="13" methods="6" coveredmethods="6"/>
-      <file name="specialCollectionController.js" path="D:\Y3S2WE35-CSSE\waste_management\backend\controllers\specialCollectionController.js">
+      <metrics statements="311" coveredstatements="243" conditionals="103" coveredconditionals="62" methods="43" coveredmethods="35"/>
+      <file name="binController.js" path="/Users/chaveensewni/Desktop/Y3S2/CHAW/CSSE LAB/Assignment 2/Y3S2WE35-CSSE/waste_management/backend/controllers/binController.js">
+        <metrics statements="80" coveredstatements="41" conditionals="24" coveredconditionals="7" methods="11" coveredmethods="5"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="2" count="1" type="stmt"/>
+        <line num="3" count="1" type="stmt"/>
+        <line num="4" count="1" type="stmt"/>
+        <line num="8" count="1" type="stmt"/>
+        <line num="9" count="2" type="stmt"/>
+        <line num="11" count="2" type="stmt"/>
+        <line num="13" count="2" type="stmt"/>
+        <line num="14" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="15" count="1" type="stmt"/>
+        <line num="19" count="1" type="stmt"/>
+        <line num="21" count="1" type="stmt"/>
+        <line num="30" count="1" type="stmt"/>
+        <line num="33" count="1" type="stmt"/>
+        <line num="35" count="1" type="stmt"/>
+        <line num="40" count="0" type="stmt"/>
+        <line num="46" count="1" type="stmt"/>
+        <line num="47" count="1" type="stmt"/>
+        <line num="48" count="1" type="stmt"/>
+        <line num="51" count="1" type="stmt"/>
+        <line num="53" count="0" type="stmt"/>
+        <line num="59" count="1" type="stmt"/>
+        <line num="60" count="2" type="stmt"/>
+        <line num="61" count="2" type="stmt"/>
+        <line num="64" count="2" type="stmt"/>
+        <line num="69" count="0" type="stmt"/>
+        <line num="70" count="0" type="stmt"/>
+        <line num="76" count="1" type="stmt"/>
+        <line num="77" count="2" type="stmt"/>
+        <line num="78" count="2" type="stmt"/>
+        <line num="81" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="82" count="1" type="stmt"/>
+        <line num="86" count="1" type="stmt"/>
+        <line num="88" count="1" type="stmt"/>
+        <line num="93" count="0" type="stmt"/>
+        <line num="99" count="1" type="stmt"/>
+        <line num="100" count="2" type="stmt"/>
+        <line num="101" count="2" type="stmt"/>
+        <line num="104" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="105" count="1" type="stmt"/>
+        <line num="108" count="1" type="stmt"/>
+        <line num="110" count="1" type="stmt"/>
+        <line num="123" count="0" type="stmt"/>
+        <line num="129" count="1" type="stmt"/>
+        <line num="130" count="0" type="stmt"/>
+        <line num="132" count="0" type="stmt"/>
+        <line num="133" count="0" type="stmt"/>
+        <line num="135" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="136" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="137" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="138" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="139" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="140" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="142" count="0" type="stmt"/>
+        <line num="143" count="0" type="stmt"/>
+        <line num="145" count="0" type="stmt"/>
+        <line num="148" count="0" type="stmt"/>
+        <line num="154" count="1" type="stmt"/>
+        <line num="155" count="0" type="stmt"/>
+        <line num="156" count="0" type="stmt"/>
+        <line num="158" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="159" count="0" type="stmt"/>
+        <line num="160" count="0" type="stmt"/>
+        <line num="162" count="0" type="stmt"/>
+        <line num="165" count="0" type="stmt"/>
+        <line num="171" count="1" type="stmt"/>
+        <line num="172" count="0" type="stmt"/>
+        <line num="173" count="0" type="stmt"/>
+        <line num="175" count="0" type="stmt"/>
+        <line num="176" count="0" type="stmt"/>
+        <line num="177" count="0" type="stmt"/>
+        <line num="179" count="0" type="stmt"/>
+        <line num="180" count="0" type="stmt"/>
+        <line num="181" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="182" count="0" type="stmt"/>
+        <line num="184" count="0" type="stmt"/>
+        <line num="187" count="0" type="stmt"/>
+        <line num="192" count="0" type="stmt"/>
+        <line num="195" count="0" type="stmt"/>
+        <line num="199" count="1" type="stmt"/>
+      </file>
+      <file name="collectionController.js" path="/Users/chaveensewni/Desktop/Y3S2/CHAW/CSSE LAB/Assignment 2/Y3S2WE35-CSSE/waste_management/backend/controllers/collectionController.js">
+        <metrics statements="93" coveredstatements="64" conditionals="44" coveredconditionals="21" methods="16" coveredmethods="14"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="2" count="1" type="stmt"/>
+        <line num="6" count="1" type="stmt"/>
+        <line num="7" count="5" type="stmt"/>
+        <line num="8" count="5" type="stmt"/>
+        <line num="11" count="5" type="cond" truecount="6" falsecount="0"/>
+        <line num="12" count="1" type="stmt"/>
+        <line num="19" count="4" type="cond" truecount="4" falsecount="0"/>
+        <line num="20" count="1" type="stmt"/>
+        <line num="27" count="3" type="stmt"/>
+        <line num="32" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="33" count="1" type="stmt"/>
+        <line num="39" count="2" type="stmt"/>
+        <line num="47" count="2" type="stmt"/>
+        <line num="50" count="1" type="stmt"/>
+        <line num="52" count="1" type="stmt"/>
+        <line num="57" count="1" type="stmt"/>
+        <line num="58" count="1" type="stmt"/>
+        <line num="68" count="1" type="stmt"/>
+        <line num="69" count="2" type="stmt"/>
+        <line num="70" count="2" type="stmt"/>
+        <line num="75" count="1" type="stmt"/>
+        <line num="80" count="1" type="stmt"/>
+        <line num="81" count="1" type="stmt"/>
+        <line num="90" count="1" type="stmt"/>
+        <line num="91" count="3" type="stmt"/>
+        <line num="92" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="93" count="3" type="stmt"/>
+        <line num="95" count="3" type="stmt"/>
+        <line num="96" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="98" count="3" type="stmt"/>
+        <line num="104" count="2" type="stmt"/>
+        <line num="106" count="2" type="stmt"/>
+        <line num="117" count="1" type="stmt"/>
+        <line num="118" count="1" type="stmt"/>
+        <line num="127" count="1" type="stmt"/>
+        <line num="128" count="3" type="stmt"/>
+        <line num="129" count="3" type="stmt"/>
+        <line num="131" count="3" type="stmt"/>
+        <line num="134" count="2" type="stmt"/>
+        <line num="136" count="2" type="stmt"/>
+        <line num="137" count="2" type="stmt"/>
+        <line num="138" count="2" type="stmt"/>
+        <line num="139" count="2" type="stmt"/>
+        <line num="140" count="2" type="stmt"/>
+        <line num="142" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="147" count="1" type="stmt"/>
+        <line num="152" count="2" type="stmt"/>
+        <line num="153" count="2" type="stmt"/>
+        <line num="154" count="2" type="cond" truecount="1" falsecount="1"/>
+        <line num="155" count="2" type="cond" truecount="1" falsecount="1"/>
+        <line num="156" count="2" type="stmt"/>
+        <line num="158" count="2" type="stmt"/>
+        <line num="162" count="2" type="stmt"/>
+        <line num="167" count="1" type="stmt"/>
+        <line num="168" count="1" type="stmt"/>
+        <line num="177" count="1" type="stmt"/>
+        <line num="178" count="0" type="stmt"/>
+        <line num="179" count="0" type="stmt"/>
+        <line num="181" count="0" type="stmt"/>
+        <line num="183" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="184" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="185" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="186" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="187" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="188" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="189" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="192" count="0" type="cond" truecount="0" falsecount="4"/>
+        <line num="193" count="0" type="stmt"/>
+        <line num="196" count="0" type="stmt"/>
+        <line num="197" count="0" type="stmt"/>
+        <line num="198" count="0" type="stmt"/>
+        <line num="200" count="0" type="stmt"/>
+        <line num="205" count="0" type="stmt"/>
+        <line num="211" count="0" type="stmt"/>
+        <line num="212" count="0" type="stmt"/>
+        <line num="221" count="1" type="stmt"/>
+        <line num="222" count="0" type="stmt"/>
+        <line num="223" count="0" type="stmt"/>
+        <line num="225" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="226" count="0" type="stmt"/>
+        <line num="227" count="0" type="stmt"/>
+        <line num="232" count="0" type="stmt"/>
+        <line num="238" count="0" type="stmt"/>
+        <line num="239" count="0" type="stmt"/>
+        <line num="248" count="1" type="stmt"/>
+        <line num="249" count="2" type="stmt"/>
+        <line num="250" count="2" type="stmt"/>
+        <line num="252" count="2" type="stmt"/>
+        <line num="261" count="2" type="stmt"/>
+        <line num="266" count="0" type="stmt"/>
+        <line num="267" count="0" type="stmt"/>
+        <line num="274" count="1" type="stmt"/>
+      </file>
+      <file name="collectorController.js" path="/Users/chaveensewni/Desktop/Y3S2/CHAW/CSSE LAB/Assignment 2/Y3S2WE35-CSSE/waste_management/backend/controllers/collectorController.js">
+        <metrics statements="93" coveredstatements="93" conditionals="22" coveredconditionals="21" methods="9" coveredmethods="9"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="2" count="1" type="stmt"/>
+        <line num="6" count="1" type="stmt"/>
+        <line num="7" count="2" type="stmt"/>
+        <line num="8" count="2" type="stmt"/>
+        <line num="9" count="2" type="stmt"/>
+        <line num="11" count="2" type="stmt"/>
+        <line num="12" count="2" type="stmt"/>
+        <line num="14" count="2" type="stmt"/>
+        <line num="21" count="1" type="stmt"/>
+        <line num="27" count="1" type="stmt"/>
+        <line num="28" count="1" type="stmt"/>
+        <line num="37" count="1" type="stmt"/>
+        <line num="38" count="4" type="stmt"/>
+        <line num="40" count="4" type="stmt"/>
+        <line num="42" count="4" type="stmt"/>
+        <line num="45" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="46" count="1" type="stmt"/>
+        <line num="53" count="2" type="stmt"/>
+        <line num="54" count="2" type="stmt"/>
+        <line num="56" count="2" type="stmt"/>
+        <line num="57" count="2" type="stmt"/>
+        <line num="60" count="2" type="stmt"/>
+        <line num="68" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="69" count="1" type="stmt"/>
+        <line num="76" count="1" type="stmt"/>
+        <line num="85" count="1" type="stmt"/>
+        <line num="86" count="1" type="stmt"/>
+        <line num="95" count="1" type="stmt"/>
+        <line num="96" count="4" type="stmt"/>
+        <line num="98" count="4" type="stmt"/>
+        <line num="99" count="4" type="stmt"/>
+        <line num="103" count="4" type="cond" truecount="2" falsecount="0"/>
+        <line num="104" count="1" type="stmt"/>
+        <line num="110" count="3" type="stmt"/>
+        <line num="113" count="3" type="cond" truecount="1" falsecount="1"/>
+        <line num="114" count="3" type="stmt"/>
+        <line num="117" count="3" type="stmt"/>
+        <line num="119" count="2" type="stmt"/>
+        <line num="126" count="1" type="stmt"/>
+        <line num="127" count="1" type="stmt"/>
+        <line num="136" count="1" type="stmt"/>
+        <line num="137" count="4" type="stmt"/>
+        <line num="139" count="4" type="stmt"/>
+        <line num="140" count="4" type="stmt"/>
+        <line num="144" count="4" type="cond" truecount="2" falsecount="0"/>
+        <line num="145" count="1" type="stmt"/>
+        <line num="151" count="3" type="cond" truecount="4" falsecount="0"/>
+        <line num="152" count="1" type="stmt"/>
+        <line num="158" count="2" type="stmt"/>
+        <line num="159" count="2" type="stmt"/>
+        <line num="160" count="2" type="stmt"/>
+        <line num="161" count="2" type="stmt"/>
+        <line num="163" count="2" type="stmt"/>
+        <line num="165" count="1" type="stmt"/>
+        <line num="172" count="1" type="stmt"/>
+        <line num="173" count="1" type="stmt"/>
+        <line num="182" count="1" type="stmt"/>
+        <line num="183" count="4" type="stmt"/>
+        <line num="185" count="4" type="stmt"/>
+        <line num="186" count="4" type="stmt"/>
+        <line num="190" count="4" type="cond" truecount="2" falsecount="0"/>
+        <line num="191" count="1" type="stmt"/>
+        <line num="197" count="3" type="cond" truecount="4" falsecount="0"/>
+        <line num="198" count="1" type="stmt"/>
+        <line num="204" count="2" type="stmt"/>
+        <line num="205" count="2" type="stmt"/>
+        <line num="206" count="2" type="stmt"/>
+        <line num="208" count="2" type="stmt"/>
+        <line num="210" count="1" type="stmt"/>
+        <line num="217" count="1" type="stmt"/>
+        <line num="218" count="1" type="stmt"/>
+        <line num="227" count="1" type="stmt"/>
+        <line num="228" count="3" type="stmt"/>
+        <line num="229" count="3" type="stmt"/>
+        <line num="231" count="3" type="stmt"/>
+        <line num="232" count="3" type="stmt"/>
+        <line num="234" count="3" type="stmt"/>
+        <line num="235" count="3" type="stmt"/>
+        <line num="238" count="3" type="stmt"/>
+        <line num="239" count="3" type="stmt"/>
+        <line num="240" count="3" type="stmt"/>
+        <line num="243" count="3" type="stmt"/>
+        <line num="248" count="2" type="stmt"/>
+        <line num="253" count="2" type="stmt"/>
+        <line num="255" count="2" type="stmt"/>
+        <line num="258" count="3" type="stmt"/>
+        <line num="259" count="3" type="stmt"/>
+        <line num="261" count="3" type="stmt"/>
+        <line num="264" count="2" type="stmt"/>
+        <line num="270" count="1" type="stmt"/>
+        <line num="271" count="1" type="stmt"/>
+        <line num="278" count="1" type="stmt"/>
+      </file>
+      <file name="dashboardController.js" path="/Users/chaveensewni/Desktop/Y3S2/CHAW/CSSE LAB/Assignment 2/Y3S2WE35-CSSE/waste_management/backend/controllers/dashboardController.js">
+        <metrics statements="6" coveredstatements="6" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+        <line num="8" count="1" type="stmt"/>
+        <line num="9" count="3" type="stmt"/>
+        <line num="12" count="3" type="stmt"/>
+        <line num="46" count="3" type="stmt"/>
+        <line num="49" count="1" type="stmt"/>
+        <line num="53" count="1" type="stmt"/>
+      </file>
+      <file name="specialCollectionController.js" path="/Users/chaveensewni/Desktop/Y3S2/CHAW/CSSE LAB/Assignment 2/Y3S2WE35-CSSE/waste_management/backend/controllers/specialCollectionController.js">
         <metrics statements="39" coveredstatements="39" conditionals="13" coveredconditionals="13" methods="6" coveredmethods="6"/>
         <line num="1" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
@@ -48,18 +332,95 @@
       </file>
     </package>
     <package name="models">
-      <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
-      <file name="specialCollectionModel.js" path="D:\Y3S2WE35-CSSE\waste_management\backend\models\specialCollectionModel.js">
+      <metrics statements="27" coveredstatements="21" conditionals="2" coveredconditionals="0" methods="3" coveredmethods="0"/>
+      <file name="binModel.js" path="/Users/chaveensewni/Desktop/Y3S2/CHAW/CSSE LAB/Assignment 2/Y3S2WE35-CSSE/waste_management/backend/models/binModel.js">
+        <metrics statements="7" coveredstatements="6" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
+        <line num="1" count="3" type="stmt"/>
+        <line num="3" count="3" type="stmt"/>
+        <line num="31" count="0" type="stmt"/>
+        <line num="45" count="3" type="stmt"/>
+        <line num="46" count="3" type="stmt"/>
+        <line num="48" count="3" type="stmt"/>
+        <line num="49" count="3" type="stmt"/>
+      </file>
+      <file name="collectionScheduleModel.js" path="/Users/chaveensewni/Desktop/Y3S2/CHAW/CSSE LAB/Assignment 2/Y3S2WE35-CSSE/waste_management/backend/models/collectionScheduleModel.js">
+        <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="1" count="2" type="stmt"/>
+        <line num="3" count="2" type="stmt"/>
+        <line num="56" count="2" type="stmt"/>
+        <line num="57" count="2" type="stmt"/>
+      </file>
+      <file name="specialCollectionModel.js" path="/Users/chaveensewni/Desktop/Y3S2/CHAW/CSSE LAB/Assignment 2/Y3S2WE35-CSSE/waste_management/backend/models/specialCollectionModel.js">
         <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
         <line num="55" count="1" type="stmt"/>
         <line num="57" count="1" type="stmt"/>
       </file>
+      <file name="userModel.js" path="/Users/chaveensewni/Desktop/Y3S2/CHAW/CSSE LAB/Assignment 2/Y3S2WE35-CSSE/waste_management/backend/models/userModel.js">
+        <metrics statements="12" coveredstatements="7" conditionals="2" coveredconditionals="0" methods="2" coveredmethods="0"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="2" count="1" type="stmt"/>
+        <line num="4" count="1" type="stmt"/>
+        <line num="28" count="1" type="stmt"/>
+        <line num="29" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="30" count="0" type="stmt"/>
+        <line num="32" count="0" type="stmt"/>
+        <line num="33" count="0" type="stmt"/>
+        <line num="37" count="1" type="stmt"/>
+        <line num="38" count="0" type="stmt"/>
+        <line num="41" count="1" type="stmt"/>
+        <line num="43" count="1" type="stmt"/>
+      </file>
     </package>
     <package name="routes">
-      <metrics statements="8" coveredstatements="8" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
-      <file name="specialCollectionRoutes.js" path="D:\Y3S2WE35-CSSE\waste_management\backend\routes\specialCollectionRoutes.js">
+      <metrics statements="41" coveredstatements="41" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      <file name="binRoutes.js" path="/Users/chaveensewni/Desktop/Y3S2/CHAW/CSSE LAB/Assignment 2/Y3S2WE35-CSSE/waste_management/backend/routes/binRoutes.js">
+        <metrics statements="9" coveredstatements="9" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="2" count="1" type="stmt"/>
+        <line num="12" count="1" type="stmt"/>
+        <line num="14" count="1" type="stmt"/>
+        <line num="18" count="1" type="stmt"/>
+        <line num="21" count="1" type="stmt"/>
+        <line num="24" count="1" type="stmt"/>
+        <line num="29" count="1" type="stmt"/>
+        <line num="32" count="1" type="stmt"/>
+      </file>
+      <file name="collectionRoutes.js" path="/Users/chaveensewni/Desktop/Y3S2/CHAW/CSSE LAB/Assignment 2/Y3S2WE35-CSSE/waste_management/backend/routes/collectionRoutes.js">
+        <metrics statements="9" coveredstatements="9" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="2" count="1" type="stmt"/>
+        <line num="3" count="1" type="stmt"/>
+        <line num="12" count="1" type="stmt"/>
+        <line num="14" count="1" type="stmt"/>
+        <line num="18" count="1" type="stmt"/>
+        <line num="21" count="1" type="stmt"/>
+        <line num="24" count="1" type="stmt"/>
+        <line num="27" count="1" type="stmt"/>
+        <line num="31" count="1" type="stmt"/>
+      </file>
+      <file name="collectorRoutes.js" path="/Users/chaveensewni/Desktop/Y3S2/CHAW/CSSE LAB/Assignment 2/Y3S2WE35-CSSE/waste_management/backend/routes/collectorRoutes.js">
+        <metrics statements="10" coveredstatements="10" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="2" count="1" type="stmt"/>
+        <line num="10" count="1" type="stmt"/>
+        <line num="12" count="1" type="stmt"/>
+        <line num="13" count="1" type="stmt"/>
+        <line num="14" count="1" type="stmt"/>
+        <line num="15" count="1" type="stmt"/>
+        <line num="16" count="1" type="stmt"/>
+        <line num="17" count="1" type="stmt"/>
+        <line num="19" count="1" type="stmt"/>
+      </file>
+      <file name="dashboardRoutes.js" path="/Users/chaveensewni/Desktop/Y3S2/CHAW/CSSE LAB/Assignment 2/Y3S2WE35-CSSE/waste_management/backend/routes/dashboardRoutes.js">
+        <metrics statements="5" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="2" count="1" type="stmt"/>
+        <line num="3" count="1" type="stmt"/>
+        <line num="4" count="1" type="stmt"/>
+        <line num="7" count="1" type="stmt"/>
+        <line num="9" count="1" type="stmt"/>
+      </file>
+      <file name="specialCollectionRoutes.js" path="/Users/chaveensewni/Desktop/Y3S2/CHAW/CSSE LAB/Assignment 2/Y3S2WE35-CSSE/waste_management/backend/routes/specialCollectionRoutes.js">
         <metrics statements="8" coveredstatements="8" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>

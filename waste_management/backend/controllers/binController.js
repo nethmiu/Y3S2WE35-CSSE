@@ -204,5 +204,5 @@ module.exports = {
     generateQRCode,
     updateBin,
     deleteBin,
-    getUserBinStats // NEW
+    getUserBinStats 
 };

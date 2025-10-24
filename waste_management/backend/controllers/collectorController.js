@@ -15,7 +15,7 @@ const getTodaySchedules = async (req, res) => {
             scheduledDate: { $gte: today, $lt: tomorrow }
         })
         .populate('user', 'email name')
-        .populate('bins', 'binName binType capacity location qrCode') // FIXED: 'bins' not 'bin'
+        .populate('bins', 'binName binType capacity location qrCode')  
         .sort({ timeSlot: 1 });
 
         res.json({

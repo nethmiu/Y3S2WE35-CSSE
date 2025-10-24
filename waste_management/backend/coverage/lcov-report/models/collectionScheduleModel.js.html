@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for models/specialCollectionModel.js</title>
+    <title>Code coverage report for models/collectionScheduleModel.js</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../prettify.css" />
     <link rel="stylesheet" href="../base.css" />
@@ -19,7 +19,7 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../index.html">All files</a> / <a href="index.html">models</a> specialCollectionModel.js</h1>
+        <h1><a href="../index.html">All files</a> / <a href="index.html">models</a> collectionScheduleModel.js</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
@@ -119,11 +119,9 @@
 <a name='L54'></a><a href='#L54'>54</a>
 <a name='L55'></a><a href='#L55'>55</a>
 <a name='L56'></a><a href='#L56'>56</a>
-<a name='L57'></a><a href='#L57'>57</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L57'></a><a href='#L57'>57</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -173,55 +171,58 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span></td><td class="text"><pre class="prettyprint lang-js">const mongoose = require('mongoose');
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span></td><td class="text"><pre class="prettyprint lang-js">const mongoose = require('mongoose');
 &nbsp;
-const specialCollectionSchema = mongoose.Schema(
+const collectionScheduleSchema = mongoose.Schema(
     {
         user: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,
-            ref: 'User', // User model එකට සම්බන්ධ කිරීම
+            ref: 'User',
         },
-        date: {
+        collector: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+        },
+        bins: [{
+            type: mongoose.Schema.Types.ObjectId,
+            required: true,
+            ref: 'Bin',
+        }],
+        scheduledDate: {
             type: Date,
             required: true,
         },
         timeSlot: {
-            type: String, // උදා: "8:00 AM - 11:00 AM"
-            required: true,
-        },
-        wasteType: {
             type: String,
             required: true,
         },
-        location: {
-            latitude: { type: Number, required: true },
-            longitude: { type: Number, required: true },
-        },
-        remarks: {
+        collectionType: {
             type: String,
-        },
-        // --- අලුතින් එකතු කළ fields ---
-        weight: {
-            type: Number,
-            required: true,
-        },
-        totalAmount: {
-            type: Number,
-            required: true,
-        },
-        // ------------------------------
-        paymentStatus: {
-            type: String,
-            required: true,
-            default: 'Paid',
+            enum: ['regular', 'special'],
+            default: 'regular',
         },
         status: {
             type: String,
-            required: true,
-            default: 'Pending', // එකතු කිරීමට නියමිත
+            enum: ['scheduled', 'in-progress', 'completed', 'rejected', 'cancelled'],
+            default: 'scheduled',
+        },
+        wasteLevel: {
+            type: Number, // percentage 0-100
+            default: 0,
+        },
+        notes: {
+            type: String,
+        },
+        collectedAt: {
+            type: Date,
+        },
+        rejectedReason: {
+            type: String,
         },
     },
     {
@@ -229,9 +230,8 @@ const specialCollectionSchema = mongoose.Schema(
     }
 );
 &nbsp;
-const SpecialCollection = mongoose.model('SpecialCollection', specialCollectionSchema);
-&nbsp;
-module.exports = SpecialCollection;</pre></td></tr></table></pre>
+const CollectionSchedule = mongoose.model('CollectionSchedule', collectionScheduleSchema);
+module.exports = CollectionSchedule;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->
