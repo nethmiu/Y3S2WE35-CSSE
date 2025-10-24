@@ -125,7 +125,7 @@ const AddRegularCollectionScreen = ({ route, navigation }) => {
                 Alert.alert(
                     'Success', 
                     'Regular collection scheduled successfully!',
-                    [{ text: 'OK', onPress: () => navigation.goBack() }]
+                    [{ text: 'OK', onPress: () => navigation.navigate('MainUserTabs', { userDetails })}]
                 );
             } else {
                 Alert.alert('Error', response.data.message || 'Failed to schedule collection');

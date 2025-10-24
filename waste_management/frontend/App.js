@@ -16,7 +16,7 @@ import PaymentScreen from './screens/PaymentScreen';
 import SummaryScreen from './screens/SummaryScreen';
 import ScheduleScreen from './screens/ScheduleScreen';
 import CollectorDashboard from './screens/CollectorDashboard';
-import ProfileScreen from './screens/ProfileScreen'; // ADD PROFILE SCREEN IMPORT
+import HomeScreen from './screens/HomeScreen'; // ADD PROFILE SCREEN IMPORT
 import DashboardScreen from './screens/DashboardScreen'; // ADD DASHBOARD SCREEN IMPORT
 import CollectionScheduleScreen from './screens/CollectionScheduleScreen';
 
@@ -37,7 +37,7 @@ function MainUserTabs({ route }) {
             iconName = focused ? 'speedometer' : 'speedometer-outline';
           } else if (route.name === 'Schedule') {
             iconName = focused ? 'list' : 'list-outline';
-          } else if (route.name === 'Profile') {
+          } else if (route.name === 'Home') {
             iconName = focused ? 'person' : 'person-outline';
           }
           return <Ionicons name={iconName} size={size} color={color} />;
@@ -60,14 +60,16 @@ function MainUserTabs({ route }) {
         options={{ title: 'My Schedule' }}
       />
       <Tab.Screen 
-        name="Profile" 
-        component={ProfileScreen} // NEW PROFILE TAB
+        name="Home" 
+        component={HomeScreen} // NEW PROFILE TAB
         initialParams={{ userDetails }}
         options={{ title: 'Profile' }}
       />
     </Tab.Navigator>
   );
 }
+
+
 
 // ප්‍රධාන App Component එක
 export default function App() {

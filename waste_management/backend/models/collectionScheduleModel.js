@@ -7,6 +7,10 @@ const collectionScheduleSchema = mongoose.Schema(
             required: true,
             ref: 'User',
         },
+        collector: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+        },
         bins: [{
             type: mongoose.Schema.Types.ObjectId,
             required: true,
