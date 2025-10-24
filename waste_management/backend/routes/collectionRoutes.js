@@ -15,6 +15,8 @@ router.route('/')
     .post(createCollection)
     .get(getCollections);
 
+    
+
 router.route('/user/:userId')
     .get(getCollectionsByUser);
 

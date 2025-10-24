@@ -6,10 +6,12 @@ const {
     updateCollectionStatus,
     completeCollection,
     rejectCollection,
-    getCollectorStats
+    getCollectorStats,
+    getTodayPendingSchedules
 } = require('../controllers/collectorController');
 
 router.get('/schedules', getTodaySchedules);
+router.get('/pending-schedules', getTodayPendingSchedules);
 router.post('/verify-bin', verifyBinAndSchedule);
 router.put('/update-status', updateCollectionStatus);
 router.put('/complete-collection', completeCollection);

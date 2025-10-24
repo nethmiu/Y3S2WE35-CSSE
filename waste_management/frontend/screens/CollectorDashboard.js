@@ -210,7 +210,7 @@ export default function CollectorDashboard({ route, navigation }) {
 
       <ScrollView 
         style={styles.content}
-        contentContainerStyle={styles.contentContainer} // FIXED: Added contentContainerStyle
+        contentContainerStyle={styles.contentContainer} 
         refreshControl={
           <RefreshControl 
             refreshing={refreshing} 

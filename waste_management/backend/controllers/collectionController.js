@@ -1,8 +1,7 @@
 const CollectionSchedule = require('../models/collectionScheduleModel');
 const Bin = require('../models/binModel');
 
-// @desc    Create collection schedule
-// @route   POST /api/collections/regular
+
 const createCollection = async (req, res) => {
     try {
         const { userId, binIds, scheduledDate, timeSlot, collectionType } = req.body;
@@ -63,8 +62,7 @@ const createCollection = async (req, res) => {
     }
 };
 
-// @desc    Get all collections
-// @route   GET /api/collections/regular
+
 const getCollections = async (req, res) => {
     try {
         const collections = await CollectionSchedule.find({})
@@ -85,8 +83,6 @@ const getCollections = async (req, res) => {
     }
 };
 
-// @desc    Get collections by user ID
-// @route   GET /api/collections/regular/user/:userId
 const getCollectionsByUser = async (req, res) => {
     try {
         const { page = 1, limit = 20, status } = req.query;
@@ -122,8 +118,7 @@ const getCollectionsByUser = async (req, res) => {
     }
 };
 
-// @desc    Get collection summary for user
-// @route   GET /api/collections/regular/summary/:userId
+
 const getCollectionSummary = async (req, res) => {
     try {
         const userId = req.params.userId;
@@ -172,8 +167,7 @@ const getCollectionSummary = async (req, res) => {
     }
 };
 
-// @desc    Update collection schedule
-// @route   PUT /api/collections/regular/:id
+
 const updateCollection = async (req, res) => {
     try {
         const { scheduledDate, timeSlot, status, wasteLevel, notes, collector } = req.body;
@@ -216,8 +210,7 @@ const updateCollection = async (req, res) => {
     }
 };
 
-// @desc    Delete collection schedule
-// @route   DELETE /api/collections/regular/:id
+
 const deleteCollection = async (req, res) => {
     try {
         const collection = await CollectionSchedule.findById(req.params.id);
@@ -243,8 +236,6 @@ const deleteCollection = async (req, res) => {
     }
 };
 
-// @desc    Get upcoming collections for user
-// @route   GET /api/collections/regular/upcoming/:userId
 const getUpcomingCollections = async (req, res) => {
     try {
         const userId = req.params.userId;
@@ -276,7 +267,7 @@ module.exports = {
     getCollections,
     getCollectionsByUser,
     getCollectionSummary,
-    getUpcomingCollections, // NEW
+    getUpcomingCollections, 
     updateCollection,
     deleteCollection
 };

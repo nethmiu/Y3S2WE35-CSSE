@@ -3,8 +3,7 @@ const QRCode = require('qrcode');
 const User = require('../models/userModel');
 const e = require('express');
 
-// @desc    Create new bin for user
-// @route   POST /api/bins
+
 const createBin = async (req, res) => {
     const { userId, location, binType, capacity, binName } = req.body;
 
@@ -41,8 +40,6 @@ const createBin = async (req, res) => {
     }
 };
 
-// @desc    Get all bins (for managers/admins)
-// @route   GET /api/bins
 const getBins = async (req, res) => {
     try {
         const bins = await Bin.find({})
@@ -54,8 +51,6 @@ const getBins = async (req, res) => {
     }
 };
 
-// @desc    Get bins by user ID (for regular users)
-// @route   GET /api/bins/user/:userId
 const getBinsByUser = async (req, res) => {
     try {
         const bins = await Bin.find({ user: req.params.userId })
@@ -71,8 +66,7 @@ const getBinsByUser = async (req, res) => {
     }
 };
 
-// @desc    Get bin by ID
-// @route   GET /api/bins/:id
+
 const getBinById = async (req, res) => {
     try {
         const bin = await Bin.findById(req.params.id)
@@ -94,8 +88,7 @@ const getBinById = async (req, res) => {
     }
 };
 
-// @desc    Generate QR code for bin
-// @route   GET /api/bins/:id/qrcode
+
 const generateQRCode = async (req, res) => {
     try {
         const bin = await Bin.findById(req.params.id)
@@ -124,8 +117,7 @@ const generateQRCode = async (req, res) => {
     }
 };
 
-// @desc    Update bin
-// @route   PUT /api/bins/:id
+
 const updateBin = async (req, res) => {
     const { location, binType, capacity, isActive, binName } = req.body;
 
@@ -149,8 +141,7 @@ const updateBin = async (req, res) => {
     }
 };
 
-// @desc    Delete bin
-// @route   DELETE /api/bins/:id
+
 const deleteBin = async (req, res) => {
     try {
         const bin = await Bin.findById(req.params.id);
@@ -166,8 +157,6 @@ const deleteBin = async (req, res) => {
     }
 };
 
-// @desc    Get user's bin statistics
-// @route   GET /api/bins/user/:userId/stats
 const getUserBinStats = async (req, res) => {
     try {
         const userId = req.params.userId;

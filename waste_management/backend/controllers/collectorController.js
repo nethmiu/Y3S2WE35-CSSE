@@ -1,8 +1,7 @@
 const CollectionSchedule = require('../models/collectionScheduleModel');
 const Bin = require('../models/binModel');
 
-// @desc    Get today's schedules for collector
-// @route   GET /api/collector/schedules
+
 const getTodaySchedules = async (req, res) => {
     try {
         const today = new Date();
@@ -32,8 +31,7 @@ const getTodaySchedules = async (req, res) => {
     }
 };
 
-// @desc    Verify bin and schedule
-// @route   POST /api/collector/verify-bin
+
 const verifyBinAndSchedule = async (req, res) => {
     const { qrCode, collectorId } = req.body;
 
@@ -90,8 +88,7 @@ const verifyBinAndSchedule = async (req, res) => {
     }
 };
 
-// @desc    Update collection status
-// @route   PUT /api/collector/update-status
+
 const updateCollectionStatus = async (req, res) => {
     const { scheduleId, status } = req.body;
 
@@ -131,8 +128,7 @@ const updateCollectionStatus = async (req, res) => {
     }
 };
 
-// @desc    Update waste level and complete collection
-// @route   PUT /api/collector/complete-collection
+
 const completeCollection = async (req, res) => {
     const { scheduleId, wasteLevel, notes } = req.body;
 
@@ -177,8 +173,7 @@ const completeCollection = async (req, res) => {
     }
 };
 
-// @desc    Reject collection
-// @route   PUT /api/collector/reject-collection
+
 const rejectCollection = async (req, res) => {
     const { scheduleId, reason } = req.body;
 
@@ -222,8 +217,37 @@ const rejectCollection = async (req, res) => {
     }
 };
 
-// @desc    Get collector statistics
-// @route   GET /api/collector/stats/:collectorId
+const getTodayPendingSchedules = async (req, res) => {
+    try {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+
+        const schedules = await CollectionSchedule.find({
+            scheduledDate: { $gte: today, $lt: tomorrow },
+            status: { $in: ['scheduled', 'in-progress'] }
+        })
+        .populate('user', 'email name')
+        .populate('bins', 'binName binType capacity location qrCode')  
+        .sort({ timeSlot: 1 });
+
+        res.json({
+            success: true,
+            data: schedules,
+            count: schedules.length
+        });
+    } catch (error) {
+        console.error('Error getting today schedules:', error);
+        res.status(500).json({ 
+            success: false,
+            message: 'Server Error' 
+        });
+    }
+};
+
+
 const getCollectorStats = async (req, res) => {
     try {
         const { collectorId } = req.params;
@@ -281,5 +305,6 @@ module.exports = {
     updateCollectionStatus,
     completeCollection,
     rejectCollection,
-    getCollectorStats
+    getCollectorStats,
+    getTodayPendingSchedules
 };

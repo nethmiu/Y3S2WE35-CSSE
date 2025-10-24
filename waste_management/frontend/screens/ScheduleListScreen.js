@@ -13,7 +13,7 @@ import { Ionicons } from '@expo/vector-icons';
 export default function ScheduleListScreen({ route, navigation }) {
   const { schedules } = route.params;
   const [refreshing, setRefreshing] = useState(false);
-  const [filter, setFilter] = useState('all'); // 'all', 'scheduled', 'in-progress', 'completed'
+  const [filter, setFilter] = useState('all'); 
 
   const onRefresh = async () => {
     setRefreshing(true);
